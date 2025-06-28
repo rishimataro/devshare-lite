@@ -1,0 +1,30 @@
+{
+  "name": "devshare-lite",
+  "version": "0.1.0",
+  "author": {
+    "name": "taro"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ant-design/nextjs-registry": "1.0.2",
+    "antd": "5.26.2",
+    "next": "15.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "3.3.1",
+    "@types/node": "24.0.4",
+    "@types/react": "19.1.0",
+    "@types/react-dom": "19.1.0",
+    "eslint": "8.57.0",
+    "eslint-config-next": "15.3.4",
+    "typescript": "5.8.3"
+  }
+}
