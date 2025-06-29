@@ -1,17 +1,45 @@
-
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Document } from 'mongoose';
+import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
-export type UserDocument = HydratedDocument<User>;
+export type UserDocument = User & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
-  @Prop()
-  name: string;
+    @ApiProperty()
+    @Prop({ required: true, unique: true })
+    username: string;
 
-  @Prop()
-  age: number;
+    @ApiProperty()
+    @Prop({ required: true, unique: true })
+    email: string;
 
+    @Exclude()
+    @Prop({ required: true })
+    password: string;
+
+    @ApiProperty({ enum: ['user', 'admin'], default: 'user' })
+    @Prop({ type: String, enum: ['user', 'admin'], default: 'user' })
+    role: string;
+
+    @ApiProperty({ type: Object, required: false })
+    @Prop({
+        type: {
+            bio: { type: String, default: '' },
+            avatar: { type: String, default: '' },
+        },
+    })
+    profile?: {
+        bio: string;
+        avatar: string;
+    };
+
+    @ApiProperty()
+    createdAt?: Date;
+
+    @ApiProperty()
+    updatedAt?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
