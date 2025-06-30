@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import mongoose, { HydratedDocument } from 'mongoose';
 
-export type PostDocument = Post & Document;
+export type PostDocument = HydratedDocument<Post>;
 
 export enum PostStatus {
     DRAFT = 'draft',

@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import mongoose, { HydratedDocument } from 'mongoose';
 
-export type CommentDocument = Comment & Document;
+export type CommentDocument = HydratedDocument<Comment>;
 
 @Schema({ timestamps: true })
 export class Comment {
