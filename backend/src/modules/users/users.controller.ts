@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -9,12 +9,27 @@ export class UsersController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
+    console.log('Creating user with data:', createUserDto);
     return this.usersService.create(createUserDto);
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll(
+    @Query() query: string,
+    @Query("currentPage") currentPage: string,
+    @Query("pageSize") pageSize: string,
+  ) {
+    try{
+      if (isNaN(+currentPage) || isNaN(+pageSize)) {
+        throw new Error('currentPage and pageSize must be numbers');
+      }
+      else{
+        return this.usersService.findAll(query, +currentPage, +pageSize);
+      }
+    } catch (error) {
+      console.error('Error in findAll query parameters:', error);
+      throw new Error('Invalid query parameters');
+    }
   }
 
   @Get(':id')
