@@ -12,6 +12,7 @@ import { User, UserSchema } from './modules/users/schemas/user.schema';
 import { Post, PostSchema } from './modules/posts/schemas/post.schema';
 import { Tag, TagSchema } from './modules/tags/schemas/tag.schema';
 import { Comment, CommentSchema } from './modules/comments/schemas/comment.schema';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
@@ -33,6 +34,7 @@ import { Comment, CommentSchema } from './modules/comments/schemas/comment.schem
         MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
         MongooseModule.forFeature([{ name: Tag.name, schema: TagSchema }]),
         MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],
