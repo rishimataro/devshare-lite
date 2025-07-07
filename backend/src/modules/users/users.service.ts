@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 import { hashPasswordHelper } from './../../helpers/utils';
 import { isEmail } from 'class-validator';
 import aqp from 'api-query-params';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class UsersService {
@@ -102,8 +103,22 @@ export class UsersService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    // check if id is a valid ObjectId
+    if (!mongoose.isValidObjectId(id)) {
+      throw new BadRequestException('ID không hợp lệ');
+    }
+
+    // check if user exists
+    const userExists = this.userModel.exists({ _id: id });
+    if (!userExists) {
+      throw new BadRequestException('Người dùng không tồn tại');
+    }
+
+    // remove user
+    return this.userModel.deleteOne(
+      { _id: id }
+    )
   }
 }
 

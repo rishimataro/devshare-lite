@@ -33,6 +33,10 @@ export class CreateUserDto {
     @IsIn(['user', 'admin'])
     role?: string;
 
+    @ApiProperty({ type: Boolean, required: false, default: true })
+    @IsOptional()
+    isActive?: boolean;
+
     @ApiProperty({ required: false, type: ProfileDto })
     @IsOptional()
     @ValidateNested()

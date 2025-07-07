@@ -23,6 +23,10 @@ export class User {
     @Prop({ type: String, enum: ['user', 'admin'], default: 'user' })
     role: string;
 
+    @ApiProperty({ type: Boolean, required: false, default: true })
+    @Prop({ type: Boolean, default: true })
+    isActive?: boolean;
+
     @ApiProperty({ type: Object, required: false })
     @Prop({
         type: {
