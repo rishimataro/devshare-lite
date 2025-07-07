@@ -92,6 +92,14 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
+  async findByUserName(username: string) {
+    const user = await this.userModel.findOne({ username });
+    if (!user) {
+      throw new BadRequestException(`Người dùng với username: ${username} không tồn tại.`);
+    }
+    return user;
+  }
+
   async update(updateUserDto: UpdateUserDto) {
     try {
       return await this.userModel.updateOne(
