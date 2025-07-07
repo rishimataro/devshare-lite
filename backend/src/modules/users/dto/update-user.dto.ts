@@ -19,7 +19,4 @@ export class UpdateUserDto {
     @ValidateNested()
     @Type(() => ProfileDto)
     profile?: ProfileDto;
-
-    @IsOptional()
-    isActive?: boolean;
 }
