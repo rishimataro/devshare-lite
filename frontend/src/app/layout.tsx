@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import AntdConfig from '@/components/AntdConfig';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import '@/app/globals.css';
 
 export const metadata: Metadata = {
@@ -14,8 +16,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <AntdRegistry>{children}</AntdRegistry>
+      <body suppressHydrationWarning={true}>
+        <AntdRegistry>
+          <AntdConfig>
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+          </AntdConfig>
+        </AntdRegistry>
       </body>
     </html>
   );
