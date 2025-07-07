@@ -6,7 +6,16 @@ export const hashPasswordHelper = async (plainPassword: string): Promise<string>
     try{
         return await bcrypt.hash(plainPassword, SALT_ROUNDS);
     } catch (error) {
-        console.error('Error hashing password:', error);
-        throw new Error('Failed to hash password');
+        console.error('Lỗi mã hóa mật khẩu:', error);
+        throw new Error('Lỗi khi mã hóa mật khẩu');
+    }
+}
+
+export const comparePasswordHelper = async (plainPassword: string, hashedPassword: string): Promise<boolean> => {
+    try {
+        return await bcrypt.compare(plainPassword, hashedPassword);
+    } catch (error) {
+        console.error('Lỗi so sánh mật khẩu:', error);
+        throw new Error('Lỗi khi so sánh mật khẩu');
     }
 }
