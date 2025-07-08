@@ -45,7 +45,6 @@ export class AuthService {
       throw new BadRequestException('Dữ liệu đăng ký không hợp lệ');
     }
     
-    // Check if passwords match
     this.checkPasswordMatch(registerDto.password, registerDto.confirmPassword);
     
     return await this.usersService.handleRegister(registerDto);
@@ -54,18 +53,15 @@ export class AuthService {
   async verifyAccount(verifyAccountDto: VerifyAccountDto) {
     const { email, verificationCode } = verifyAccountDto;
     
-    // Find user by email
+  
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new BadRequestException('Không tìm thấy tài khoản với email này');
     }
 
-    // Check if account is already verified
     if (user.isActive) {
       throw new BadRequestException('Tài khoản đã được kích hoạt');
     }
-
-    // Check if verification code is valid
     if (!user.isCodeValid(verificationCode)) {
       if (user.isCodeExpired()) {
         throw new BadRequestException('Mã xác thực đã hết hạn. Vui lòng yêu cầu mã mới');
@@ -84,18 +80,15 @@ export class AuthService {
   async resendVerification(resendVerificationDto: ResendVerificationDto) {
     const { email } = resendVerificationDto;
     
-    // Find user by email
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new BadRequestException('Không tìm thấy tài khoản với email này');
     }
 
-    // Check if account is already verified
     if (user.isActive) {
       throw new BadRequestException('Tài khoản đã được kích hoạt');
     }
 
-    // Resend verification code
     await this.usersService.resendVerificationCode(user._id.toString());
 
     return {
