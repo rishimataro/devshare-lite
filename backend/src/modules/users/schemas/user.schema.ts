@@ -71,7 +71,6 @@ export class User {
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-// Thêm các phương thức 
 UserSchema.methods.isCodeExpired = function(): boolean {
     if (!this.codeExpired) return true;
     return new Date() > this.codeExpired;
@@ -81,6 +80,5 @@ UserSchema.methods.isCodeValid = function(code: string): boolean {
     return this.codeId === code && !this.isCodeExpired();
 };
 
-// Thêm chỉ mục
 UserSchema.index({ email: 1, isActive: 1 });
 UserSchema.index({ codeId: 1, codeExpired: 1 });
