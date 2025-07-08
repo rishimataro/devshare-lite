@@ -12,6 +12,10 @@ export class UpdateUserDto {
     username?: string;
 
     @IsOptional()
+    @IsString({ message: 'Họ tên không hợp lệ' })
+    fullname?: string;
+
+    @IsOptional()
     @IsEmail({}, { message: 'Email không hợp lệ' })
     email?: string;
 
@@ -19,4 +23,7 @@ export class UpdateUserDto {
     @ValidateNested()
     @Type(() => ProfileDto)
     profile?: ProfileDto;
+
+    @IsOptional()
+    isActive?: boolean;
 }

@@ -21,14 +21,14 @@ export class UsersController {
   ) {
     try{
       if (isNaN(+currentPage) || isNaN(+pageSize)) {
-        throw new Error('currentPage and pageSize must be numbers');
+        throw new Error('currentPage và pageSize phải là số');
       }
       else{
         return this.usersService.findAll(query, +currentPage, +pageSize);
       }
     } catch (error) {
-      console.error('Error in findAll query parameters:', error);
-      throw new Error('Invalid query parameters');
+      console.error('Lỗi:', error);
+      throw new Error('Lỗi không xác định');
     }
   }
 

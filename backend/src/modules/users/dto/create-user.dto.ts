@@ -25,7 +25,7 @@ export class CreateUserDto {
     @ApiProperty()
     @IsString({ message: 'Mật khẩu không hợp lệ' })
     @MinLength(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' })
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Mật khẩu không được để trống' })
     password: string;
 
     @ApiProperty({ enum: ['user', 'admin'], default: 'user', required: false })
@@ -38,4 +38,8 @@ export class CreateUserDto {
     @ValidateNested()
     @Type(() => ProfileDto)
     profile?: ProfileDto;
+
+    @ApiProperty({ required: false, default: false })
+    @IsOptional()
+    isActive?: boolean;
 }
