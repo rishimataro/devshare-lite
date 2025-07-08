@@ -15,6 +15,9 @@ import { Comment, CommentSchema } from './modules/comments/schemas/comment.schem
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/passport/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import * as path from 'path';
 
 @Module({
     imports: [
@@ -37,6 +40,33 @@ import { APP_GUARD } from '@nestjs/core';
         MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
         MongooseModule.forFeature([{ name: Tag.name, schema: TagSchema }]),
         MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
+        MailerModule.forRootAsync({
+            imports: [ConfigModule],
+            useFactory: async (configService: ConfigService) => ({
+                transport: {
+                    host: configService.get<string>('MAILDEV_INCOMING_HOST'),
+                    port: configService.get<number>('MAILDEV_INCOMING_PORT'),
+                    // ignoreTLS: true,
+                    secure: true,
+                    auth: {
+                        user: configService.get<string>('MAILDEV_INCOMING_USER'),
+                        pass: configService.get<string>('MAILDEV_INCOMING_PASS'),
+                    },
+                },
+                defaults: {
+                    from: '"No Reply" <no-reply@localhost>',
+                },
+                // preview: true,
+                template: {
+                    dir: process.cwd() + '/src/mail/templates/',
+                    adapter: new HandlebarsAdapter(),
+                    options: {
+                        strict: true,
+                    },
+                },
+            }),
+            inject: [ConfigService],
+        }),
     ],
     controllers: [AppController],
     providers: [
