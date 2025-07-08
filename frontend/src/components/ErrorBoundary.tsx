@@ -24,7 +24,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error boundary caught an error:', error, errorInfo);
+    console.error('Lỗi:', error, errorInfo);
   }
 
   render() {
@@ -32,8 +32,8 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       return (
         this.props.fallback || (
           <Alert
-            message="Something went wrong"
-            description="Please refresh the page to try again."
+            message="Lỗi không xác định"
+            description="Vui lòng làm mới trang để thử lại."
             type="error"
             showIcon
           />
