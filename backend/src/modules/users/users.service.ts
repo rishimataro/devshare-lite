@@ -10,249 +10,267 @@ import mongoose from 'mongoose';
 import { CreateAuthDto } from 'src/auth/dto/create-auth.dto';
 import { v4 as uuidv4 } from 'uuid';
 import * as dayjs from 'dayjs';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(User.name)
-    private userModel: Model<User>
-  ) { }
+    constructor(
+        @InjectModel(User.name)
+        private userModel: Model<User>,
+        private readonly mailerService: MailerService
+    ) { }
 
-  isEmailExist = async (email: string): Promise<boolean> => {
-    const user = await this.userModel.exists({ email });
-    if (user) {
-      return true;
-    }
-    return false;
-  }
-
-  isUsernameExist = async (username: string): Promise<boolean> => {
-    const user = await this.userModel.exists({ username });
-    if (user) {
-      return true;
-    }
-    return false;
-  }
-
-  async create(createUserDto: CreateUserDto) {
-    const { username, email, password, role, isActive, profile } = createUserDto;
-
-    // check email existence
-    const emailExists = await this.isEmailExist(email);
-    if (emailExists === true) {
-      throw new BadRequestException(`Email ${email} đã được sử dụng bởi tài khoản khác. Vui lòng sử dụng email khác.`);
+    isEmailExist = async (email: string): Promise<boolean> => {
+        const user = await this.userModel.exists({ email });
+        if (user) {
+            return true;
+        }
+        return false;
     }
 
-    // check username existence
-    const usernameExists = await this.isUsernameExist(username);
-    if (usernameExists === true) {
-      throw new BadRequestException(`Tên tài khoản: ${username} đã tồn tại. Vui lòng sử dụng tên tài khoản khác.`);
+    isUsernameExist = async (username: string): Promise<boolean> => {
+        const user = await this.userModel.exists({ username });
+        if (user) {
+            return true;
+        }
+        return false;
     }
 
-    // hashPassword
-    const hashPassword = await hashPasswordHelper(password);
-    const newUser = await this.userModel.create({
-      username,
-      email,
-      password: hashPassword,
-      role: role || 'user',
-      isActive: isActive || false,
-      profile,
-    });
+    async create(createUserDto: CreateUserDto) {
+        const { username, email, password, role, isActive, profile } = createUserDto;
 
-    return {
-      _id: newUser._id,
-    };
-  }
+        // check email existence
+        const emailExists = await this.isEmailExist(email);
+        if (emailExists === true) {
+            throw new BadRequestException(`Email ${email} đã được sử dụng bởi tài khoản khác. Vui lòng sử dụng email khác.`);
+        }
 
-  async findAll(query: string, currentPage: number, pageSize: number) {
-    const { filter, sort } = aqp(query);
+        // check username existence
+        const usernameExists = await this.isUsernameExist(username);
+        if (usernameExists === true) {
+            throw new BadRequestException(`Tên tài khoản: ${username} đã tồn tại. Vui lòng sử dụng tên tài khoản khác.`);
+        }
 
-    if (filter.currentPage) delete filter.currentPage;
-    if (filter.pageSize) delete filter.pageSize;
+        // hashPassword
+        const hashPassword = await hashPasswordHelper(password);
+        const newUser = await this.userModel.create({
+            username,
+            email,
+            password: hashPassword,
+            role: role || 'user',
+            isActive: isActive || false,
+            profile,
+        });
 
-    const totalItems = (await this.userModel.find(filter)).length;
-    const totalPages = Math.ceil(totalItems / pageSize);
-    const skip = (currentPage - 1) * pageSize;
-
-    const results = await this.userModel
-      .find(filter)
-      .limit(pageSize)
-      .skip(skip)
-      .select('-password -__v')
-      .sort(sort as any);
-
-    return {
-      results,
-      totalItems,
-      totalPages,
-      currentPage,
-      pageSize,
-    };
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  async findByUserName(username: string) {
-    const user = await this.userModel.findOne({ username });
-    if (!user) {
-      throw new BadRequestException(`Người dùng với username: ${username} không tồn tại.`);
-    }
-    return user;
-  }
-
-  async update(updateUserDto: UpdateUserDto) {
-    try {
-      return await this.userModel.updateOne(
-        { _id: updateUserDto._id },
-        {...updateUserDto }
-      )
-    } catch (error) {
-      throw new BadRequestException('Đã xảy ra lỗi khi cập nhật người dùng: ' + error.message);
-    }
-  }
-
-  async remove(id: string) {
-    // check if id is a valid ObjectId
-    if (!mongoose.isValidObjectId(id)) {
-      throw new BadRequestException('ID không hợp lệ');
+        return {
+            _id: newUser._id,
+        };
     }
 
-    // check if user exists
-    const userExists = this.userModel.exists({ _id: id });
-    if (!userExists) {
-      throw new BadRequestException('Người dùng không tồn tại');
+    async findAll(query: string, currentPage: number, pageSize: number) {
+        const { filter, sort } = aqp(query);
+
+        if (filter.currentPage) delete filter.currentPage;
+        if (filter.pageSize) delete filter.pageSize;
+
+        const totalItems = (await this.userModel.find(filter)).length;
+        const totalPages = Math.ceil(totalItems / pageSize);
+        const skip = (currentPage - 1) * pageSize;
+
+        const results = await this.userModel
+            .find(filter)
+            .limit(pageSize)
+            .skip(skip)
+            .select('-password -__v')
+            .sort(sort as any);
+
+        return {
+            results,
+            totalItems,
+            totalPages,
+            currentPage,
+            pageSize,
+        };
     }
 
-    // remove user
-    return this.userModel.deleteOne(
-      { _id: id }
-    )
-  }
-
-  async handleRegister(registerDto: CreateAuthDto) {
-    if (!registerDto) {
-      throw new BadRequestException('Dữ liệu đăng ký không hợp lệ');
-    }
-    
-    const { username, email, password } = registerDto;
-
-    if (!username || !email || !password) {
-      throw new BadRequestException('Tên đăng nhập, email và mật khẩu là bắt buộc');
+    findOne(id: number) {
+        return `This action returns a #${id} user`;
     }
 
-    // check email existence
-    const emailExists = await this.isEmailExist(email);
-    if (emailExists === true) {
-      throw new BadRequestException(`Email ${email} đã được sử dụng bởi tài khoản khác. Vui lòng sử dụng email khác.`);
+    async findByUserName(username: string) {
+        const user = await this.userModel.findOne({ username });
+        if (!user) {
+            throw new BadRequestException(`Người dùng với username: ${username} không tồn tại.`);
+        }
+        return user;
     }
 
-    // check username existence
-    const usernameExists = await this.isUsernameExist(username);
-    if (usernameExists === true) {
-      throw new BadRequestException(`Tên tài khoản: ${username} đã tồn tại. Vui lòng sử dụng tên tài khoản khác.`);
+    async findByEmail(email: string) {
+        const user = await this.userModel.findOne({ email });
+        if (!user) {
+            throw new BadRequestException(`Người dùng với email: ${email} không tồn tại.`);
+        }
+        return user;
     }
 
-    // hashPassword
-    const hashPassword = await hashPasswordHelper(password);
-    const newUser = await this.userModel.create({
-      username,
-      email,
-      password: hashPassword,
-      role: 'user',
-      isActive: false,
-      codeId: uuidv4(),
-      codeExpired: dayjs().add(1, 'h'),
-    });
-
-    // trả về thông tin người dùng đã đăng ký
-    return {
-      _id: newUser._id,
+    async activateAccount(userId: string) {
+        try {
+            const result = await this.userModel.updateOne(
+                { _id: userId },
+                { 
+                    isActive: true,
+                    $unset: { codeId: 1, codeExpired: 1 }
+                }
+            );
+            
+            if (result.modifiedCount === 0) {
+                throw new BadRequestException('Không thể kích hoạt tài khoản');
+            }
+            
+            return result;
+        } catch (error) {
+            throw new BadRequestException('Đã xảy ra lỗi khi kích hoạt tài khoản: ' + error.message);
+        }
     }
 
-    // gửi email xác nhận đăng ký 
-  
-  }
+    async resendVerificationCode(userId: string) {
+        try {
+            const user = await this.userModel.findById(userId);
+            if (!user) {
+                throw new BadRequestException('Người dùng không tồn tại');
+            }
 
-  async verifyActivationCode(codeId: string): Promise<{ success: boolean; message: string; user?: any }> {
-    const user = await this.userModel.findOne({ codeId });
-    
-    if (!user) {
-      return {
-        success: false,
-        message: 'Mã xác thực không hợp lệ'
-      };
+            // Generate new verification code
+            const codeId = uuidv4();
+            const codeExpired = dayjs().add(5, 'minutes');
+
+            // Update user with new code
+            await this.userModel.updateOne(
+                { _id: userId },
+                { 
+                    codeId: codeId,
+                    codeExpired: codeExpired.toDate()
+                }
+            );
+
+            // Send verification email
+            await this.mailerService.sendMail({
+                to: user.email,
+                subject: 'Kích hoạt tài khoản DevShare',
+                template: "verify-code-email",
+                context: {
+                    username: user.username ?? user.email,
+                    verificationCode: codeId,
+                    app_name: "DevShare",
+                    name: "Nguyễn Thái Ngọc Thảo",
+                    currentYear: new Date().getFullYear(),
+                    address: "154 Nguyễn Lương Bằng, Liên Chiểu, Đà Nẵng",
+                    supportEmail: "support@devshare.com",
+                    supportPhone: "0123456789",
+                    expiration_minutes: 5
+                }
+            });
+
+            return {
+                message: 'Mã xác thực mới đã được gửi đến email của bạn'
+            };
+        } catch (error) {
+            throw new BadRequestException('Đã xảy ra lỗi khi gửi lại mã xác thực: ' + error.message);
+        }
     }
 
-    if (user.isActive) {
-      return {
-        success: false,
-        message: 'Tài khoản đã được kích hoạt trước đó'
-      };
+    async update(updateUserDto: UpdateUserDto) {
+        try {
+            return await this.userModel.updateOne(
+                { _id: updateUserDto._id },
+                { ...updateUserDto }
+            )
+        } catch (error) {
+            throw new BadRequestException('Đã xảy ra lỗi khi cập nhật người dùng: ' + error.message);
+        }
     }
 
-    if (user.isCodeExpired()) {
-      return {
-        success: false,
-        message: 'Mã xác thực đã hết hạn. Vui lòng yêu cầu mã mới'
-      };
+    async remove(id: string) {
+        // check if id is a valid ObjectId
+        if (!mongoose.isValidObjectId(id)) {
+            throw new BadRequestException('ID không hợp lệ');
+        }
+
+        // check if user exists
+        const userExists = this.userModel.exists({ _id: id });
+        if (!userExists) {
+            throw new BadRequestException('Người dùng không tồn tại');
+        }
+
+        // remove user
+        return this.userModel.deleteOne(
+            { _id: id }
+        )
     }
 
-    // Activate user account
-    await this.userModel.updateOne(
-      { _id: user._id },
-      { 
-        $set: { isActive: true },
-        $unset: { codeId: "", codeExpired: "" }
-      }
-    );
+    async handleRegister(registerDto: CreateAuthDto) {
+        if (!registerDto) {
+            throw new BadRequestException('Dữ liệu đăng ký không hợp lệ');
+        }
 
-    return {
-      success: true,
-      message: 'Kích hoạt tài khoản thành công',
-      user: {
-        _id: user._id,
-        username: user.username,
-        email: user.email
-      }
-    };
-  }
+        const { username, email, password } = registerDto;
 
-  async resendActivationCode(email: string): Promise<{ success: boolean; message: string }> {
-    const user = await this.userModel.findOne({ email });
-    
-    if (!user) {
-      return {
-        success: false,
-        message: 'Email không tồn tại trong hệ thống'
-      };
+        if (!username || !email || !password) {
+            throw new BadRequestException('Tên đăng nhập, email và mật khẩu là bắt buộc');
+        }
+
+        // check email existence
+        const emailExists = await this.isEmailExist(email);
+        if (emailExists === true) {
+            throw new BadRequestException(`Email ${email} đã được sử dụng bởi tài khoản khác. Vui lòng sử dụng email khác.`);
+        }
+
+        // check username existence
+        const usernameExists = await this.isUsernameExist(username);
+        if (usernameExists === true) {
+            throw new BadRequestException(`Tên tài khoản: ${username} đã tồn tại. Vui lòng sử dụng tên tài khoản khác.`);
+        }
+
+        // hashPassword
+        const hashPassword = await hashPasswordHelper(password);
+        const codeId = uuidv4();
+        const newUser = await this.userModel.create({
+            username,
+            email,
+            password: hashPassword,
+            role: 'user',
+            isActive: false,
+            codeId: codeId,
+            codeExpired: dayjs().add(5, 'minutes'),
+        });
+
+        // gửi email xác nhận đăng ký
+        try{
+            await this.mailerService
+            .sendMail({
+                to: newUser.email,
+                subject: 'Kích hoạt tài khoản DevShare',
+                template: "verify-code-email",
+                context: {
+                    username: newUser.username ?? newUser.email,
+                    verificationCode: codeId,
+                    app_name: "DevShare",
+                    name: "Nguyễn Thái Ngọc Thảo",
+                    currentYear: new Date().getFullYear(),
+                    address: "154 Nguyễn Lương Bằng, Liên Chiểu, Đà Nẵng",
+                    supportEmail: "support@devshare.com",
+                    supportPhone: "0123456789",
+                    expiration_minutes: 5
+                }
+            })
+        } catch (error) {
+            throw new BadRequestException('Đã xảy ra lỗi khi gửi email xác nhận: ' + error.message);
+        }
+
+        // trả về thông tin người dùng đã đăng ký
+        return {
+            message: 'Đăng ký thành công. Vui lòng kiểm tra email để xác nhận tài khoản.',
+            _id: newUser._id
+        }
     }
-
-    if (user.isActive) {
-      return {
-        success: false,
-        message: 'Tài khoản đã được kích hoạt'
-      };
-    }
-
-    // Generate new code
-    const newCodeId = uuidv4();
-    const newCodeExpired = dayjs().add(1, 'h').toDate();
-
-    await this.userModel.updateOne(
-      { _id: user._id },
-      {
-        codeId: newCodeId,
-        codeExpired: newCodeExpired
-      }
-    );
-
-    return {
-      success: true,
-      message: 'Mã xác thực mới đã được gửi đến email của bạn'
-    };
-  }
 }
-
