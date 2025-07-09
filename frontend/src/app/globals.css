@@ -1,14 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Menbere:wght@100..700&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-bg: #ffffff;
+  --color-text: #171717;
+  
+  --color-primary: #F875AA; 
+  --color-primary-light: #FFDFDF;
+
+  --color-secondary: #0089ED;
+  --color-secondary-light: #FFF6F6;
+
+  --color-accent: #AEDEFC; 
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-bg: #0a0a0a;
+    --color-text: #ededed;
+
+    --color-primary: #F875AA;
+    --color-primary-light: #3a1f26;
+
+    --color-secondary: #3399ff;
+    --color-secondary-light: #1a1a2e;
+
+    --color-accent: #5ebefc;
   }
 }
 
@@ -19,8 +35,8 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--color-text);
+  background: var(--color-bg);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
