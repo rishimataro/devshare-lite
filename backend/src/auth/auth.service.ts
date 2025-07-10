@@ -51,13 +51,12 @@ export class AuthService {
   }
 
   async verifyAccount(verifyAccountDto: VerifyAccountDto) {
-    const { email, verificationCode } = verifyAccountDto;
+    const { userId, verificationCode } = verifyAccountDto;
     
-  
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findById(userId);
     if (!user) {
-      throw new BadRequestException('Không tìm thấy tài khoản với email này');
-    }
+      throw new BadRequestException('Không tìm thấy tài khoản');
+    } 
 
     if (user.isActive) {
       throw new BadRequestException('Tài khoản đã được kích hoạt');
@@ -78,11 +77,11 @@ export class AuthService {
   }
 
   async resendVerification(resendVerificationDto: ResendVerificationDto) {
-    const { email } = resendVerificationDto;
+    const { userId } = resendVerificationDto;
     
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findById(userId);
     if (!user) {
-      throw new BadRequestException('Không tìm thấy tài khoản với email này');
+      throw new BadRequestException('Không tìm thấy tài khoản');
     }
 
     if (user.isActive) {
@@ -92,7 +91,7 @@ export class AuthService {
     await this.usersService.resendVerificationCode(user._id.toString());
 
     return {
-      message: 'Mã xác thực mới đã được gửi đến email của bạn'
+      message: 'Mã xác thực mới đã được gửi đến email đã đăng ký của bạn'
     };
   }
 

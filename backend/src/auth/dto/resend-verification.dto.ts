@@ -1,7 +1,7 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class ResendVerificationDto {
-    @IsEmail({}, { message: 'Email phải có định dạng hợp lệ' })
-    @IsNotEmpty({ message: 'Email không được để trống' })
-    email: string;
+    @IsString({ message: 'ID người dùng phải là chuỗi' })
+    @IsNotEmpty({ message: 'ID người dùng không được để trống' })
+    userId: string;
 }

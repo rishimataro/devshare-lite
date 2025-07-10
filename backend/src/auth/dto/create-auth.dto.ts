@@ -5,6 +5,9 @@ export class CreateAuthDto {
     @IsNotEmpty({ message: 'Tên đăng nhập không được để trống' })
     username: string;
 
+    @IsNotEmpty({ message: 'Tên đăng nhập không được để trống' })
+    fullName: string;
+
     @IsNotEmpty({ message: 'Mật khẩu không được để trống' })
     password: string;
 
