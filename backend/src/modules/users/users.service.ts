@@ -113,6 +113,14 @@ export class UsersService {
         return user;
     }
 
+    async findById(_id: string) {
+        const user = await this.userModel.findOne({ _id });
+        if (!user) {
+            throw new BadRequestException(`Người dùng với _id: ${_id} không tồn tại.`);
+        }
+        return user;
+    }
+
     async activateAccount(userId: string) {
         try {
             const result = await this.userModel.updateOne(
@@ -140,11 +148,9 @@ export class UsersService {
                 throw new BadRequestException('Người dùng không tồn tại');
             }
 
-            // Generate new verification code
             const codeId = uuidv4();
             const codeExpired = dayjs().add(5, 'minutes');
 
-            // Update user with new code
             await this.userModel.updateOne(
                 { _id: userId },
                 { 
@@ -153,7 +159,6 @@ export class UsersService {
                 }
             );
 
-            // Send verification email
             await this.mailerService.sendMail({
                 to: user.email,
                 subject: 'Kích hoạt tài khoản DevShare',
