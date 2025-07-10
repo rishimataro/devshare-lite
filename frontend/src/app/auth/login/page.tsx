@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Form, Input, Button, Card, Typography, message } from 'antd';
+import { Form, Input, Button, Card, Typography, App } from 'antd';
 import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import '../transitions.css';
+import { signIn } from "next-auth/react";
 
 const { Title, Text } = Typography;
 
@@ -18,6 +18,15 @@ interface LoginFormData {
 const HIDE_BANNER_WIDTH = 768; 
 
 const LoginPage: React.FC = () => {
+    return (
+        <App>
+            <LoginContent />
+        </App>
+    );
+};
+
+const LoginContent: React.FC = () => {
+    const { message } = App.useApp();
     const [form] = Form.useForm();
     const [loading, setLoading] = React.useState(false);
     const [windowWidth, setWindowWidth] = React.useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -38,10 +47,18 @@ const LoginPage: React.FC = () => {
     const onFinish = async (values: LoginFormData) => {
         setLoading(true);
         try {
-            message.success('Đăng nhập thành công!');
-            router.push('/dashboard');
+            // trigger login
+            const result = await signIn("credentials", { username: values.username, password: values.password, redirect: false, });
+
+            if (result?.error) {
+                message.error(result.error || 'Đăng nhập thất bại. Vui lòng thử lại.');
+            } else {
+                message.success('Đăng nhập thành công!');
+                router.push('/dashboard');
+            }
         } catch (error) {
-            message.error('Đăng nhập thất bại. Vui lòng thử lại.');
+            console.error('Lỗi đăng nhập:', error);
+            message.error(error instanceof Error ? error.message : 'Đăng nhập thất bại. Vui lòng thử lại.');
         } finally {
             setLoading(false);
         }

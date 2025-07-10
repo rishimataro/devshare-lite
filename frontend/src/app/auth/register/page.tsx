@@ -1,16 +1,18 @@
 'use client';
 
 import React from 'react';
-import { Form, Input, Button, Card, Typography, Divider, Space, message, Checkbox } from 'antd';
+import { Form, Input, Button, Card, Typography, Divider, Space, message, Checkbox, App } from 'antd';
 import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone, MailOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { sendRequest } from '@/utils/api';
 
 const { Title, Text } = Typography;
 
 interface RegisterFormData {
-    name: string;
+    fullName: string;
+    username: string;
     email: string;
     password: string;
     confirmPassword: string;
@@ -20,6 +22,15 @@ interface RegisterFormData {
 const HIDE_BANNER_WIDTH = 768;
 
 const RegisterPage: React.FC = () => {
+    return (
+        <App>
+            <RegisterContent />
+        </App>
+    );
+};
+
+const RegisterContent: React.FC = () => {
+    const { message}  = App.useApp();
     const [form] = Form.useForm();
     const [loading, setLoading] = React.useState(false);
     const [windowWidth, setWindowWidth] = React.useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -39,10 +50,33 @@ const RegisterPage: React.FC = () => {
     const onFinish = async (values: RegisterFormData) => {
         setLoading(true);
         try {
-            console.log('Register form values:', values);
-            message.success('Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.');
-            router.push('/auth/login');
-        } catch (error) {
+            const { fullName, username, email, password, confirmPassword } = values;
+
+            const result = await sendRequest<any>({
+                url: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/register`,
+                method: 'POST',
+                body: {
+                    fullName,
+                    username,
+                    email,
+                    password,
+                    confirmPassword
+                }
+            });
+            
+            console.log('Registration result:', result);
+            
+            // Check registration
+            if (result?._id && !result?.error && !result?.statusCode) {
+                message.success('Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.');
+                router.push(`/auth/verify/${result._id}`);
+            } else {
+                const errorMessage = result?.message || result?.error || 'Đăng ký thất bại. Vui lòng thử lại sau.';
+                message.error(errorMessage);
+            }
+            
+        } catch (error: any) {
+            console.error('Registration error:', error);
             message.error('Đăng ký thất bại. Vui lòng thử lại.');
         } finally {
             setLoading(false);
@@ -128,7 +162,7 @@ const RegisterPage: React.FC = () => {
                         size="large"
                     >
                         <Form.Item
-                            name="name"
+                            name="fullName"
                             label={<Text strong style={{ fontSize: '14px' }}>Họ và tên</Text>}
                             rules={[
                                 { required: true, message: 'Vui lòng nhập họ tên!' },
@@ -139,6 +173,26 @@ const RegisterPage: React.FC = () => {
                             <Input
                                 prefix={<UserOutlined style={{ color: '#bfbfbf' }} />}
                                 placeholder="Họ và tên"
+                                style={{
+                                    borderRadius: '8px',
+                                    padding: '10px 15px',
+                                    height: '44px'
+                                }}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="username"
+                            label={<Text strong style={{ fontSize: '14px' }}>Tên tài khoản</Text>}
+                            rules={[
+                                { required: true, message: 'Vui lòng nhập tên tài khoản!' },
+                                { min: 6, message: 'Tên tài khoản phải có ít nhất 6 ký tự!' }
+                            ]}
+                            style={{ marginBottom: '10px' }}
+                        >
+                            <Input
+                                prefix={<UserOutlined style={{ color: '#bfbfbf' }} />}
+                                placeholder="Tên tài khoản"
                                 style={{
                                     borderRadius: '8px',
                                     padding: '10px 15px',
