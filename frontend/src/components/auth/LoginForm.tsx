@@ -38,9 +38,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, loading: externalLoadi
             });
 
             if (result?.error) {
-                message.error('Invalid credentials. Please try again.');
+                message.error('Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại.');
             } else {
-                message.success('Login successful!');
+                message.success('Đăng nhập thành công!');
                 if (onSuccess) {
                     onSuccess();
                 } else {
@@ -48,25 +48,25 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, loading: externalLoadi
                 }
             }
         } catch (error) {
-            message.error('An error occurred during login. Please try again.');
+            message.error('Đã xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại.');
         } finally {
             setLoading(false);
         }
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-        message.error('Please fill in all required fields correctly.');
+        console.log('Lỗi: ', errorInfo);
+        message.error('Vui lòng kiểm tra lại các trường thông tin.');
     };
 
     return (
         <div style={{ width: '100%', maxWidth: 400, margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 32 }}>
                 <Title level={2} style={{ margin: 0, color: '#1890ff' }}>
-                    Welcome Back
+                    Chào mừng bạn trở lại
                 </Title>
-                <Text type="secondary" style={{ fontSize: 16 }}>
-                    Sign in to your account
+                <Text type="secondary" style={{ fontSize: 16, fontStyle: 'italic' }}>
+                    Nền tảng chia sẻ bài viết cho phép bạn tạo, quản lý, công khai nội dung, tương tác qua bình luận và tìm kiếm thông tin dễ dàng
                 </Text>
             </div>
 
@@ -83,12 +83,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, loading: externalLoadi
                     name="username"
                     label="Username"
                     rules={[
-                        { required: true, message: 'Please input your username!' },
-                        { min: 3, message: 'Username must be at least 3 characters long!' }
+                        { required: true, message: 'Vui lòng nhập tên đăng nhập!' },
+                        { min: 3, message: 'Tên đăng nhập phải có ít nhất 3 ký tự!' }
                     ]}
                 >
                     <AuthInput
-                        placeholder="Enter your username"
+                        placeholder="Nhập tên đăng nhập của bạn"
                         prefixIcon={<UserOutlined />}
                     />
                 </Form.Item>
@@ -97,12 +97,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, loading: externalLoadi
                     name="password"
                     label="Password"
                     rules={[
-                        { required: true, message: 'Please input your password!' },
-                        { min: 6, message: 'Password must be at least 6 characters long!' }
+                        { required: true, message: 'Vui lòng nhập mật khẩu!' },
+                        { min: 6, message: 'Mật khẩu phải có ít nhất 6 ký tự!' }
                     ]}
                 >
                     <Input.Password
-                        placeholder="Enter your password"
+                        placeholder="Nhập mật khẩu của bạn"
                         prefix={<LockOutlined />}
                         iconRender={(visible: boolean) =>
                             visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
@@ -118,20 +118,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, loading: externalLoadi
                         block
                         style={{ height: 48, fontSize: 16 }}
                     >
-                        {isLoading ? 'Signing in...' : 'Sign In'}
+                        {isLoading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
                     </Button>
                 </Form.Item>
 
                 <div style={{ textAlign: 'center' }}>
                     <Space direction="vertical" size={8}>
                         <Text type="secondary">
-                            Don't have an account?{' '}
+                            Chưa có tài khoản?{' '}
                             <Link href="/auth/register" style={{ color: '#1890ff' }}>
-                                Sign up here
+                                Đăng ký ngay
                             </Link>
                         </Text>
                         <Link href="/auth/forgot-password" style={{ color: '#1890ff' }}>
-                            Forgot your password?
+                            Quên mật khẩu?
                         </Link>
                     </Space>
                 </div>
