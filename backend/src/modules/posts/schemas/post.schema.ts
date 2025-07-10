@@ -22,7 +22,7 @@ export class Post {
     content: string;
 
     @ApiProperty()
-    @Prop({ type: Types.ObjectId, ref: 'Users', required: true })
+    @Prop({ type: Types.ObjectId, ref: 'User', required: true })
     authorId: Types.ObjectId;
 
     @ApiProperty({ enum: PostStatus, default: PostStatus.DRAFT })
@@ -30,7 +30,7 @@ export class Post {
     status: PostStatus;
 
     @ApiProperty({ type: [String] })
-    @Prop({ type: Types.ObjectId, ref: 'Tags', default: [] })
+    @Prop({ type: Types.ObjectId, ref: 'Tag', default: [] })
     tags: Types.ObjectId[];
 
     @ApiProperty({ required: false })
@@ -42,11 +42,11 @@ export class Post {
     viewCount: number;
 
     @ApiProperty({ type: [String] })
-    @Prop({ type: [Types.ObjectId], ref: 'Users', default: [] })
+    @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
     upvotes: Types.ObjectId[];
 
     @ApiProperty({ type: [String] })
-    @Prop({ type: [Types.ObjectId], ref: 'Users', default: [] })
+    @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
     downvotes: Types.ObjectId[];
 
     @ApiProperty()
