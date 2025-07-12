@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsEnum, IsArray } from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsArray, IsUrl } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { PostStatus } from '../schemas/post.schema';
@@ -20,5 +20,11 @@ export class CreatePostDto {
     @ApiProperty({ type: [String], required: false })
     @IsOptional()
     @IsArray()
-    tags?: Types.ObjectId[];
+    tags?: string[];
+
+    @ApiProperty({ type: [String], required: false })
+    @IsOptional()
+    @IsArray()
+    @IsUrl({}, { each: true })
+    images?: string[];
 }

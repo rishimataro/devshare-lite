@@ -21,14 +21,34 @@ export class PostsController {
 
     @Public()
     @Get()
-    findAll(@Query('page') page?: number, @Query('limit') limit?: number) {
-        return this.postsService.getAllPosts(page, limit);
+    findAll(
+        @Query('page') page?: number, 
+        @Query('limit') limit?: number,
+        @Query('authorId') authorId?: string
+    ) {
+        return this.postsService.getAllPosts(page, limit, authorId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @Get('me')
+    findMyPosts(@Request() req: any) {
+        const userId = req.user?._id;
+        return this.postsService.getPostsByUserId(userId);
     }
 
     @Public()
     @Get(':id')
     findOne(@Param('id') id: string) {
         return this.postsService.getPostById(id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @Get(':id/owner')
+    findOneForOwner(@Param('id') id: string, @Request() req: any) {
+        const userId = req.user?._id;
+        return this.postsService.getPostByIdForOwner(id, userId);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -50,18 +70,10 @@ export class PostsController {
 
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    @Post(':id/upvote')
-    async upvote(@Param('id') id: string, @Req() req: any) {
+    @Post(':id/like')
+    async like(@Param('id') id: string, @Req() req: any) {
         const user = req.user as any;
-        return this.postsService.upvotePost(id, user._id);
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @ApiBearerAuth()
-    @Post(':id/downvote')
-    async downvote(@Param('id') id: string, @Req() req: any) {
-        const user = req.user as any;
-        return this.postsService.downvotePost(id, user._id);
+        return this.postsService.likePost(id, user._id);
     }
 
 }

@@ -30,8 +30,12 @@ export class Post {
     status: PostStatus;
 
     @ApiProperty({ type: [String] })
-    @Prop({ type: Types.ObjectId, ref: 'Tag', default: [] })
-    tags: Types.ObjectId[];
+    @Prop({ type: [String], default: [] })
+    tags: string[];
+
+    @ApiProperty({ type: [String] })
+    @Prop({ type: [String], default: [] })
+    images: string[];
 
     @ApiProperty({ required: false })
     @Prop({ required: false })
@@ -43,11 +47,7 @@ export class Post {
 
     @ApiProperty({ type: [String] })
     @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
-    upvotes: Types.ObjectId[];
-
-    @ApiProperty({ type: [String] })
-    @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
-    downvotes: Types.ObjectId[];
+    likes: Types.ObjectId[];
 
     @ApiProperty()
     createdAt?: Date;
