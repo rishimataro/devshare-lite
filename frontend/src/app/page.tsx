@@ -13,11 +13,11 @@ export default function Home() {
     useEffect(() => {
         if (status === 'loading') return;
 
-        if (session) {
-            router.push('/dashboard/home');
-        } else {
-            router.push('/auth/login');
-        }
+        // if (session) {
+        //     router.push('/dashboard/home');
+        // } else {
+        //     router.push('/auth/login');
+        // }
     }, [session, status, router]);
 
     if (status === 'loading') {
@@ -31,17 +31,98 @@ export default function Home() {
             alignItems: 'center',
             height: '100vh',
             flexDirection: 'column',
-            gap: '20px'
+            gap: '20px',
+            backgroundImage: 'url("/backgroundApp.jpg")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            position: 'relative'
         }}>
-            <h1>DEVSHARE LIFE</h1>
-            <p>Chào mừng bạn đến với DevShare Life!</p>
-            <div>
-                <Button type="primary" style={{ marginRight: '10px', backgroundColor: '--color-secondary' }} onClick={() => router.push('/auth/login')}>
-                    Đăng nhập
-                </Button>
-                <Button type="primary" style={{ backgroundColor: '--color-primary' }} onClick={() => router.push('/auth/register')}>
-                    Đăng ký
-                </Button>
+            <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                zIndex: 1
+            }}></div>
+            <div style={{
+                position: 'relative',
+                zIndex: 2,
+                textAlign: 'center',
+                color: 'white'
+            }}>
+                <img
+                    src="/logo.png"
+                    alt="DevShare Logo"
+                    style={{
+                        width: 80,
+                        height: 80,
+                        objectFit: 'contain',
+                        marginBottom: '20px',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                    }}
+                />
+                <h1 style={{ color: 'white', fontSize: '3rem', margin: '0 0 10px 0' }}>DEVSHARE LIFE</h1>
+                <p
+                    style={{
+                        color: 'white',
+                        fontSize: '1.2rem',
+                        lineHeight: '1.5',
+                        maxWidth: '700px',
+                        textAlign: 'center',
+                        marginBottom: '30px',
+                        padding: '0 16px',
+                        fontStyle: 'italic'
+                    }}
+                >
+                    <strong>DevShare Life</strong> – nơi bạn có thể viết lên ý tưởng, chia sẻ kiến thức, kết nối với cộng đồng qua những bài viết, bình luận sôi nổi và tìm kiếm thông tin một cách nhanh chóng. <br />
+                    Hãy bắt đầu hành trình chia sẻ của bạn ngay hôm nay!
+                </p>
+                <div>
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            gap: '16px',
+                            marginTop: '24px',
+                            flexWrap: 'wrap',
+                        }}
+                    >
+                        <Button
+                            type="primary"
+                            onClick={() => router.push('/auth/login')}
+                            style={{
+                                backgroundColor: 'var(--color-secondary)',
+                                color: '#fff',
+                                fontSize: '16px',
+                                padding: '10px 24px',
+                                borderRadius: '4px',
+                                fontWeight: 500,
+                            }}
+                        >
+                            Đăng nhập
+                        </Button>
+
+                        <Button
+                            type="primary"
+                            onClick={() => router.push('/auth/register')}
+                            style={{
+                                backgroundColor: 'var(--color-primary)',
+                                color: '#fff',
+                                fontSize: '16px',
+                                padding: '10px 24px',
+                                borderRadius: '4px',
+                                fontWeight: 500,
+                            }}
+                        >
+                            Đăng ký
+                        </Button>
+                    </div>
+
+                </div>
             </div>
         </div>
     );

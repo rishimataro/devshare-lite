@@ -11,6 +11,11 @@
   --color-secondary-light: #FFF6F6;
 
   --color-accent: #AEDEFC; 
+  
+  /* Dashboard specific colors */
+  --color-bg-dashboard: #fefefe;
+  --color-bg-content: #ffffff;
+  --color-bg-sidebar: #001529;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,6 +30,11 @@
     --color-secondary-light: #1a1a2e;
 
     --color-accent: #5ebefc;
+    
+    /* Dashboard specific colors - dark mode */
+    --color-bg-dashboard: #141414;
+    --color-bg-content: #1f1f1f;
+    --color-bg-sidebar: #001529;
   }
 }
 
@@ -59,9 +69,9 @@ a {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  background: #fafafa;
+  background: var(--color-primary-light);
   padding: 16px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--color-primary-light);
 }
 
 .post-image-gallery:hover {
@@ -72,9 +82,9 @@ a {
 .preview-image-gallery {
   border-radius: 8px;
   overflow: hidden;
-  background: #f8f9fa;
+  background: var(--color-secondary-light);
   padding: 12px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--color-accent);
 }
 
 /* Enhanced markdown content styling */
@@ -91,8 +101,8 @@ a {
 }
 
 .markdown-content pre {
-  background: #f8f9fa !important;
-  border: 1px solid #e9ecef;
+  background: var(--color-secondary-light) !important;
+  border: 1px solid var(--color-accent);
   border-radius: 8px;
   padding: 16px !important;
   overflow-x: auto;
@@ -102,7 +112,7 @@ a {
 }
 
 .markdown-content code:not(pre code) {
-  background: #f1f3f4 !important;
+  background: var(--color-primary-light) !important;
   padding: 2px 6px !important;
   border-radius: 4px !important;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
@@ -110,8 +120,8 @@ a {
 }
 
 .markdown-content blockquote {
-  border-left: 4px solid #1890ff !important;
-  background: #f0f7ff !important;
+  border-left: 4px solid var(--color-secondary) !important;
+  background: var(--color-secondary-light) !important;
   padding: 16px !important;
   margin: 16px 0 !important;
   border-radius: 0 8px 8px 0;
@@ -128,13 +138,13 @@ a {
 
 .markdown-content th,
 .markdown-content td {
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--color-accent);
   padding: 12px;
   text-align: left;
 }
 
 .markdown-content th {
-  background: #fafafa;
+  background: var(--color-primary-light);
   font-weight: 600;
 }
 

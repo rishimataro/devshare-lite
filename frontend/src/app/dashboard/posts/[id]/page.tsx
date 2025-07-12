@@ -315,7 +315,6 @@ const PostDetailPage: React.FC = () => {
                     <CommentSection postId={post._id} />
                 )}
                 
-                {/* Message for non-published posts */}
                 {post.status !== 'published' && (
                     <Card style={{ marginTop: 16 }}>
                         <div style={{ textAlign: 'center', color: '#666' }}>
