@@ -37,7 +37,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, loading: externa
             const { fullName, username, email, password, confirmPassword } = values;
 
             const result = await sendRequest<any>({
-                url: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/register`,
+                url: `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
                 method: 'POST',
                 body: {
                     fullName,
