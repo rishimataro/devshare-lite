@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, App } from 'antd';
 
 interface AntdConfigProps {
   children: React.ReactNode;
@@ -14,7 +14,9 @@ const AntdConfig: React.FC<AntdConfigProps> = ({ children }) => {
         },
       }}
     >
-      {children}
+      <App>
+        {children}
+      </App>
     </ConfigProvider>
   );
 };
