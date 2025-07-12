@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from '../../auth/passport/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { Public } from '../../decorator/customize';
 
 @Controller('users')
 export class UsersController {
@@ -45,5 +48,27 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post(':id/follow')
+  async followUser(@Param('id') id: string, @Request() req: any) {
+    const followerId = req.user?._id;
+    return this.usersService.followUser(followerId, id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post(':id/unfollow')
+  async unfollowUser(@Param('id') id: string, @Request() req: any) {
+    const followerId = req.user?._id;
+    return this.usersService.unfollowUser(followerId, id);
+  }
+
+  @Public()
+  @Get(':id/profile')
+  async getUserProfile(@Param('id') id: string) {
+    return this.usersService.getUserProfile(id);
   }
 }

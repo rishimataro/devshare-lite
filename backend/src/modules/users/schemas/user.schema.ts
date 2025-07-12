@@ -56,6 +56,14 @@ export class User {
     @Prop({ type: Date, sparse: true })
     codeExpired: Date;
 
+    @ApiProperty({ description: 'Danh sách người dùng đang follow', type: [String] })
+    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], default: [] })
+    following: mongoose.Types.ObjectId[];
+
+    @ApiProperty({ description: 'Danh sách người dùng follow mình', type: [String] })
+    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], default: [] })
+    followers: mongoose.Types.ObjectId[];
+
     // kiểm tra mã có hết hạn không
     isCodeExpired(): boolean {
         if (!this.codeExpired) return true;

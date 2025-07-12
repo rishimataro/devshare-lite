@@ -278,4 +278,100 @@ export class UsersService {
             _id: newUser._id
         }
     }
+
+    async followUser(followerId: string, followingId: string) {
+        if (followerId === followingId) {
+            throw new BadRequestException('Bạn không thể follow chính mình');
+        }
+
+        const follower = await this.userModel.findById(followerId);
+        const following = await this.userModel.findById(followingId);
+
+        if (!follower || !following) {
+            throw new BadRequestException('Người dùng không tồn tại');
+        }
+
+        // Kiểm tra xem đã follow chưa
+        const isAlreadyFollowing = follower.following.includes(new mongoose.Types.ObjectId(followingId));
+        if (isAlreadyFollowing) {
+            throw new BadRequestException('Bạn đã follow người dùng này');
+        }
+
+        // Thêm vào danh sách following và followers
+        follower.following.push(new mongoose.Types.ObjectId(followingId));
+        following.followers.push(new mongoose.Types.ObjectId(followerId));
+
+        await follower.save();
+        await following.save();
+
+        return {
+            message: 'Follow thành công',
+            followingCount: follower.following.length,
+            followerCount: following.followers.length
+        };
+    }
+
+    async unfollowUser(followerId: string, followingId: string) {
+        if (followerId === followingId) {
+            throw new BadRequestException('Bạn không thể unfollow chính mình');
+        }
+
+        const follower = await this.userModel.findById(followerId);
+        const following = await this.userModel.findById(followingId);
+
+        if (!follower || !following) {
+            throw new BadRequestException('Người dùng không tồn tại');
+        }
+
+        // Kiểm tra xem có follow không
+        const isFollowing = follower.following.includes(new mongoose.Types.ObjectId(followingId));
+        if (!isFollowing) {
+            throw new BadRequestException('Bạn chưa follow người dùng này');
+        }
+
+        // Xóa khỏi danh sách following và followers
+        follower.following = follower.following.filter(id => id.toString() !== followingId);
+        following.followers = following.followers.filter(id => id.toString() !== followerId);
+
+        await follower.save();
+        await following.save();
+
+        return {
+            message: 'Unfollow thành công',
+            followingCount: follower.following.length,
+            followerCount: following.followers.length
+        };
+    }
+
+    async getUserProfile(identifier: string) {
+        let user;
+        
+        // Kiểm tra xem identifier có phải là ObjectId không
+        if (mongoose.isValidObjectId(identifier)) {
+            user = await this.userModel
+                .findById(identifier)
+                .populate('following', 'username email profile')
+                .populate('followers', 'username email profile')
+                .select('-password -codeId -codeExpired')
+                .exec();
+        } else {
+            // Nếu không phải ObjectId thì tìm theo username
+            user = await this.userModel
+                .findOne({ username: identifier })
+                .populate('following', 'username email profile')
+                .populate('followers', 'username email profile')
+                .select('-password -codeId -codeExpired')
+                .exec();
+        }
+
+        if (!user) {
+            throw new BadRequestException('Người dùng không tồn tại');
+        }
+
+        return {
+            ...user.toObject(),
+            followingCount: user.following.length,
+            followerCount: user.followers.length
+        };
+    }
 }
