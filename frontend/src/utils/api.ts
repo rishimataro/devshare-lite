@@ -1,4 +1,68 @@
 import queryString from 'query-string';
+import axios from 'axios';
+import { getSession } from 'next-auth/react';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
+
+// Create axios instance with auth interceptor
+const createAuthenticatedAxiosInstance = () => {
+    const instance = axios.create({
+        baseURL: API_BASE_URL,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    // Request interceptor to add auth token
+    instance.interceptors.request.use(
+        async (config: any) => {
+            try {
+                // Get session from NextAuth
+                const session = await getSession();
+                let token = session?.access_token;
+                
+                // Fallback to localStorage
+                if (!token && typeof window !== 'undefined') {
+                    token = localStorage.getItem('access_token') || undefined;
+                }
+                
+                if (token) {
+                    if (!config.headers) {
+                        config.headers = {};
+                    }
+                    config.headers.Authorization = `Bearer ${token}`;
+                }
+                
+                return config;
+            } catch (error) {
+                console.error('Error adding auth token:', error);
+                return config;
+            }
+        },
+        (error) => {
+            return Promise.reject(error);
+        }
+    );
+
+    // Response interceptor to handle errors
+    instance.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            if (error.response?.status === 401) {
+                // Handle unauthorized
+                if (typeof window !== 'undefined') {
+                    localStorage.removeItem('access_token');
+                }
+            }
+            return Promise.reject(error);
+        }
+    );
+
+    return instance;
+};
+
+// Export authenticated axios instance
+export const api = createAuthenticatedAxiosInstance();
 
 export const sendRequest = async <T>(props: IRequest) => { //type
     let {
