@@ -27,13 +27,12 @@
 
 #### Hệ thống bình luận
 - **Bình luận đa cấp:** Hỗ trợ trả lời bình luận (reply)
-- **Vote bình luận:** Upvote/Downvote để đánh giá chất lượng
+- **Vote bình luận:** Like để đánh giá chất lượng
 - **CRUD bình luận:** Tạo, chỉnh sửa, xóa bình luận
 - **Phân quyền:** Chỉ tác giả mới có thể chỉnh sửa/xóa bình luận của mình
 
 #### Dashboard & Quản lý
 - **Dashboard cá nhân:** Quản lý bài viết của bản thân
-- **Thống kê:** Xem số lượt like, view, bình luận
 - **Xem profile người dùng:** Xem thông tin và bài viết của tác giả khác
 
 ## Công nghệ sử dụng
