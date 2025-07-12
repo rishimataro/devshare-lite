@@ -8,11 +8,11 @@ export type CommentDocument = HydratedDocument<Comment>;
 @Schema({ timestamps: true })
 export class Comment {
     @ApiProperty({ type: String})
-    @Prop({ type: Types.ObjectId, ref: 'Posts', required: true })
+    @Prop({ type: Types.ObjectId, ref: 'Post', required: true })
     postId: Types.ObjectId;
 
     @ApiProperty({ type: String })
-    @Prop({ type: Types.ObjectId, ref: 'Users', required: true })
+    @Prop({ type: Types.ObjectId, ref: 'User', required: true })
     authorId: Types.ObjectId;
 
     @ApiProperty()
@@ -20,19 +20,19 @@ export class Comment {
     content: string;
 
     @ApiProperty({ type: [String], required: false })
-    @Prop({ type: [Types.ObjectId], ref: 'Comments', required: false })
+    @Prop({ type: [Types.ObjectId], ref: 'Comment', required: false })
     parentId: Types.ObjectId[];
 
     @ApiProperty({ type: [String] })
-    @Prop({ type: [{ type: Types.ObjectId, ref: 'Comments' }], default: [] })
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }], default: [] })
     replies: Types.ObjectId[];
 
     @ApiProperty({ type: [String] })
-    @Prop({ type: [Types.ObjectId], ref: 'Users', default: [] })
+    @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
     upvotes: Types.ObjectId[];
 
     @ApiProperty({ type: [String] })
-    @Prop({ type: [Types.ObjectId], ref: 'Users', default: [] })
+    @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
     downvotes: Types.ObjectId[];
 
     @ApiProperty()
