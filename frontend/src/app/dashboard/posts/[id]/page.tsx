@@ -67,15 +67,12 @@ const PostDetailPage: React.FC = () => {
             
             setLoading(true);
             try {
-                // Kiểm tra nếu đang truy cập từ dashboard/posts thì sử dụng API owner
                 const isOwnerView = window.location.pathname.includes('/dashboard/posts/');
                 let data;
                 
                 if (isOwnerView && session?.user) {
-                    // Sử dụng API owner để có thể xem bài viết chưa published
                     data = await getPostByIdForOwner(postId);
                 } else {
-                    // Sử dụng API public chỉ xem được bài viết published
                     data = await getPostById(postId);
                 }
                 
@@ -94,7 +91,6 @@ const PostDetailPage: React.FC = () => {
     const handleLike = async () => {
         if (!session?.user || !post) return;
 
-        // Không thể like bài viết chưa published
         if (post.status !== 'published') {
             message.warning('Không thể like bài viết chưa công khai');
             return;
@@ -103,17 +99,14 @@ const PostDetailPage: React.FC = () => {
         setLiking(true);
         try {
             await likePost(post._id);
-            // Refresh post data after like
             const updatedPost = await getPostById(post._id);
             setPost(updatedPost as Post);
             message.success('Đã cập nhật like');
         } catch (error: any) {
             console.error('Error liking post:', error);
-            
-            // Handle specific error cases
+
             if (error.response?.status === 401) {
                 message.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
-                // Don't redirect here, let user decide
             } else if (error.message === 'No authentication token found') {
                 message.error('Bạn cần đăng nhập để like bài viết.');
             } else {
@@ -169,7 +162,6 @@ const PostDetailPage: React.FC = () => {
 
                 {/* Post Content */}
                 <Card>
-                    {/* Status Badge for non-published posts */}
                     {post.status !== 'published' && (
                         <div style={{ marginBottom: 16 }}>
                             <Tag color={post.status === 'draft' ? 'orange' : 'red'} style={{ fontSize: 14, padding: '4px 8px' }}>
@@ -212,7 +204,7 @@ const PostDetailPage: React.FC = () => {
                         </div>
                     )}
 
-                    {/* Images Section - Enhanced Display */}
+                    {/* Images Section */}
                     {post.images && post.images.length > 0 && (
                         <>
                             <Divider />
@@ -240,7 +232,6 @@ const PostDetailPage: React.FC = () => {
                                         color: '#666',
                                         textAlign: 'center'
                                     }}>
-                                        💡 <strong>Mẹo:</strong> Click vào ảnh để xem phóng to • Dùng phím mũi tên ← → để chuyển ảnh • Nhấn ESC để đóng
                                     </div>
                                 )}
                             </div>
@@ -319,7 +310,7 @@ const PostDetailPage: React.FC = () => {
                     </div>
                 </Card>
 
-                {/* Comments Section - Only show for published posts */}
+                {/* Comments Section */}
                 {post.status === 'published' && (
                     <CommentSection postId={post._id} />
                 )}

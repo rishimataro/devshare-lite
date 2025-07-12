@@ -7,43 +7,42 @@ import { Button } from "antd";
 import LoadingPage from '@/components/LoadingPage';
 
 export default function Home() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+    const { data: session, status } = useSession();
+    const router = useRouter();
 
-  useEffect(() => {
-    if (status === 'loading') return; // Still loading
+    useEffect(() => {
+        if (status === 'loading') return;
 
-    if (session) {
-      // User is authenticated, redirect to dashboard
-      router.push('/dashboard/home');
-    } else {
-      // User is not authenticated, redirect to login
-      router.push('/auth/login');
+        if (session) {
+            router.push('/dashboard/home');
+        } else {
+            router.push('/auth/login');
+        }
+    }, [session, status, router]);
+
+    if (status === 'loading') {
+        return <LoadingPage message="Kiểm tra xác thực..." />;
     }
-  }, [session, status, router]);
 
-  // Show loading while redirecting
-  if (status === 'loading') {
-    return <LoadingPage message="Checking authentication..." />;
-  }
-
-  // This will rarely be shown as user gets redirected
-  return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      height: '100vh',
-      flexDirection: 'column',
-      gap: '20px'
-    }}>
-      <h1>DevShare Lite</h1>
-      <p>Redirecting...</p>
-      <div>
-        <Button type="primary" onClick={() => router.push('/auth/login')}>
-          Go to Login
-        </Button>
-      </div>
-    </div>
-  );
+    return (
+        <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            flexDirection: 'column',
+            gap: '20px'
+        }}>
+            <h1>DEVSHARE LIFE</h1>
+            <p>Chào mừng bạn đến với DevShare Life!</p>
+            <div>
+                <Button type="primary" style={{ marginRight: '10px', backgroundColor: '--color-secondary' }} onClick={() => router.push('/auth/login')}>
+                    Đăng nhập
+                </Button>
+                <Button type="primary" style={{ backgroundColor: '--color-primary' }} onClick={() => router.push('/auth/register')}>
+                    Đăng ký
+                </Button>
+            </div>
+        </div>
+    );
 }

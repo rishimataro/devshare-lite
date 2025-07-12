@@ -11,7 +11,7 @@ const EditPostPage: React.FC = () => {
     const { data: session, status } = useSession();
 
     if (status === 'loading') {
-        return <LoadingPage message="Loading editor..." />;
+        return <LoadingPage message="Đang tải trình chỉnh sửa..." />;
     }
 
     if (status === 'unauthenticated') {

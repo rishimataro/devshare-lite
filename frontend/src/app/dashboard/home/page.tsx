@@ -11,7 +11,7 @@ const DashboardHomePage: React.FC = () => {
     const { data: session, status } = useSession();
 
     if (status === 'loading') {
-        return <LoadingPage message="Loading dashboard..." />;
+        return <LoadingPage message="Đang tải trang chủ..." />;
     }
 
     if (status === 'unauthenticated') {

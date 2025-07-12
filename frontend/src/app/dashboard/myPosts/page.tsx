@@ -11,7 +11,7 @@ const MyPostsPage: React.FC = () => {
     const { data: session, status } = useSession();
 
     if (status === 'loading') {
-        return <LoadingPage message="Loading your posts..." />;
+        return <LoadingPage message="Đang tải bài viết của bạn..." />;
     }
 
     if (status === 'unauthenticated') {
