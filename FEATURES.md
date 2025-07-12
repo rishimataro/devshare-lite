@@ -22,6 +22,7 @@
   - Tính năng gửi lại mã xác thực
   - Template email đẹp mắt với Handlebars
 
+![Xác thực email](./screenshots/21_TemplateMail.jpg)
 ![Xác thực email](./screenshots/20_Verify.jpg)
 
 #### 1.3 Đăng nhập
