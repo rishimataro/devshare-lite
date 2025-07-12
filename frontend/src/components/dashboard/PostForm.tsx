@@ -7,21 +7,30 @@ import {
     Input,
     Button,
     Select,
-    Upload,
     Typography,
     Space,
-    message,
+    App,
     Row,
     Col,
-    Tag,
+    Divider,
+    Switch,
+    Alert
 } from 'antd';
 import {
     PlusOutlined,
-    UploadOutlined,
     SaveOutlined,
     EyeOutlined,
+    EditOutlined,
+    SendOutlined,
+    PictureOutlined,
+    FileTextOutlined,
+    TagsOutlined
 } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
+import { createPost } from '@/utils/postApi';
+import ImageUpload from '@/components/input/ImageUpload';
+import PostPreview from '@/components/common/PostPreview';
+import FormCharacterCounter from '@/components/common/FormCharacterCounter';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -30,9 +39,9 @@ const { Option } = Select;
 interface PostFormData {
     title: string;
     content: string;
-    excerpt: string;
     tags: string[];
     category: string;
+    images: string[];
     isPublished: boolean;
 }
 
@@ -40,7 +49,11 @@ const PostForm: React.FC = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [preview, setPreview] = useState(false);
+    const [titleLength, setTitleLength] = useState(0);
+    const [contentLength, setContentLength] = useState(0);
+    const [formValues, setFormValues] = useState<any>({}); // Add this to track form values
     const router = useRouter();
+    const { message } = App.useApp();
 
     const predefinedTags = [
         'JavaScript',
@@ -82,16 +95,33 @@ const PostForm: React.FC = () => {
     const onFinish = async (values: PostFormData) => {
         setLoading(true);
         try {
-            // TODO: Replace with actual API call
-            console.log('Post data:', values);
+            const postData = {
+                title: values.title,
+                content: values.content,
+                tags: values.tags || [],
+                images: values.images || [],
+                status: (values.isPublished ? 'published' : 'draft') as 'published' | 'draft'
+            };
             
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            console.log('Sending post data:', postData);
+            const result = await createPost(postData);
+            console.log('Post creation result:', result);
             
             message.success('Post created successfully!');
             router.push('/dashboard/home');
-        } catch (error) {
-            message.error('Failed to create post. Please try again.');
+        } catch (error: any) {
+            console.error('Error creating post:', error);
+            
+            if (error.response?.status === 401) {
+                message.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                router.push('/auth/login');
+            } else if (error.message === 'No authentication token found') {
+                message.error('Bạn cần đăng nhập để tạo bài viết.');
+                router.push('/auth/login');
+            } else {
+                const errorMessage = error.response?.data?.message || error.message || 'Failed to create post. Please try again.';
+                message.error(errorMessage);
+            }
         } finally {
             setLoading(false);
         }
@@ -104,17 +134,40 @@ const PostForm: React.FC = () => {
 
     const handleSaveDraft = async () => {
         try {
-            const values = await form.validateFields();
-            values.isPublished = false;
+            const values = await form.getFieldsValue();
+            
+            if (!values.title || !values.content) {
+                message.error('Please fill in at least title and content to save as draft.');
+                return;
+            }
             
             setLoading(true);
-            // TODO: Replace with actual API call for saving draft
-            console.log('Draft data:', values);
+            const postData = {
+                title: values.title,
+                content: values.content,
+                tags: values.tags || [],
+                images: values.images || [],
+                status: 'draft' as const
+            };
             
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await createPost(postData);
             message.success('Draft saved successfully!');
-        } catch (error) {
-            message.error('Failed to save draft.');
+            router.push('/dashboard/myPosts');
+        } catch (error: any) {
+            console.error('Error saving draft:', error);
+            
+            // Handle specific error cases
+            if (error.response?.status === 401) {
+                message.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                router.push('/auth/login');
+            } else if (error.message === 'No authentication token found') {
+                message.error('Bạn cần đăng nhập để lưu bài viết.');
+                router.push('/auth/login');
+            } else {
+                // Display specific error message if available
+                const errorMessage = error.response?.data?.message || error.message || 'Failed to save draft.';
+                message.error(errorMessage);
+            }
         } finally {
             setLoading(false);
         }
@@ -134,39 +187,48 @@ const PostForm: React.FC = () => {
                 extra={
                     <Space>
                         <Button
-                            icon={<SaveOutlined />}
-                            onClick={handleSaveDraft}
-                            loading={loading}
-                        >
-                            Save Draft
-                        </Button>
-                        <Button
-                            type="default"
+                            type={preview ? "primary" : "default"}
                             icon={<EyeOutlined />}
                             onClick={() => setPreview(!preview)}
                         >
-                            {preview ? 'Edit' : 'Preview'}
+                            {preview ? 'Edit Mode' : 'Preview Mode'}
                         </Button>
                     </Space>
                 }
             >
-                {!preview ? (
+                {preview ? (
+                    <PostPreview form={form} data={formValues} />
+                ) : (
                     <Form
                         form={form}
                         name="createPost"
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
+                        onValuesChange={(changedValues, allValues) => {
+                            console.log('PostForm: Form values changed:', allValues);
+                            setFormValues(allValues);
+                        }}
                         layout="vertical"
                         initialValues={{
-                            isPublished: true,
+                            isPublished: false,
                             tags: [],
+                            images: [],
                         }}
                     >
                         <Row gutter={[16, 0]}>
                             <Col xs={24} lg={16}>
                                 <Form.Item
                                     name="title"
-                                    label="Post Title"
+                                    label={
+                                        <span>
+                                            Post Title 
+                                            <FormCharacterCounter
+                                                current={titleLength}
+                                                max={100}
+                                                style={{ float: 'right' }}
+                                            />
+                                        </span>
+                                    }
                                     rules={[
                                         { required: true, message: 'Please input the post title!' },
                                         { min: 5, message: 'Title must be at least 5 characters long!' },
@@ -176,27 +238,26 @@ const PostForm: React.FC = () => {
                                     <Input
                                         placeholder="Enter an engaging title for your post"
                                         size="large"
-                                    />
-                                </Form.Item>
-
-                                <Form.Item
-                                    name="excerpt"
-                                    label="Post Excerpt"
-                                    rules={[
-                                        { required: true, message: 'Please input the post excerpt!' },
-                                        { min: 20, message: 'Excerpt must be at least 20 characters long!' },
-                                        { max: 200, message: 'Excerpt must not exceed 200 characters!' },
-                                    ]}
-                                >
-                                    <TextArea
-                                        placeholder="Write a brief summary of your post (this will appear in post previews)"
-                                        rows={3}
+                                        onChange={(e) => setTitleLength(e.target.value.length)}
+                                        showCount
+                                        maxLength={100}
                                     />
                                 </Form.Item>
 
                                 <Form.Item
                                     name="content"
-                                    label="Post Content"
+                                    label={
+                                        <span>
+                                            Post Content 
+                                            <FormCharacterCounter
+                                                current={contentLength}
+                                                min={100}
+                                                showMin={true}
+                                                showMax={false}
+                                                style={{ float: 'right' }}
+                                            />
+                                        </span>
+                                    }
                                     rules={[
                                         { required: true, message: 'Please input the post content!' },
                                         { min: 100, message: 'Content must be at least 100 characters long!' },
@@ -206,19 +267,29 @@ const PostForm: React.FC = () => {
                                         placeholder="Write your post content here... (Markdown supported)"
                                         rows={15}
                                         style={{ fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace' }}
+                                        onChange={(e) => setContentLength(e.target.value.length)}
+                                        showCount
                                     />
+                                </Form.Item>
+
+                                <Form.Item
+                                    name="images"
+                                    label="Post Images (Optional)"
+                                    help="Upload images for your post. Maximum 5 images."
+                                >
+                                    <ImageUpload maxImages={5} />
                                 </Form.Item>
                             </Col>
 
                             <Col xs={24} lg={8}>
                                 <Form.Item
                                     name="category"
-                                    label="Category"
-                                    rules={[{ required: true, message: 'Please select a category!' }]}
+                                    label="Category (Optional)"
                                 >
                                     <Select
                                         placeholder="Select a category"
                                         size="large"
+                                        allowClear
                                     >
                                         {categories.map((category) => (
                                             <Option key={category} value={category}>
@@ -230,16 +301,14 @@ const PostForm: React.FC = () => {
 
                                 <Form.Item
                                     name="tags"
-                                    label="Tags"
-                                    rules={[
-                                        { required: true, message: 'Please select at least one tag!' },
-                                    ]}
+                                    label="Tags (Optional)"
                                 >
                                     <Select
                                         mode="multiple"
                                         placeholder="Select relevant tags"
                                         size="large"
                                         maxTagCount={5}
+                                        allowClear
                                     >
                                         {predefinedTags.map((tag) => (
                                             <Option key={tag} value={tag}>
@@ -250,47 +319,39 @@ const PostForm: React.FC = () => {
                                 </Form.Item>
 
                                 <Form.Item
-                                    name="coverImage"
-                                    label="Cover Image (Optional)"
-                                    valuePropName="fileList"
-                                    getValueFromEvent={(e) => {
-                                        if (Array.isArray(e)) {
-                                            return e;
-                                        }
-                                        return e?.fileList;
-                                    }}
+                                    name="isPublished"
+                                    label="Publish Status"
+                                    valuePropName="checked"
                                 >
-                                    <Upload
-                                        listType="picture-card"
-                                        maxCount={1}
-                                        beforeUpload={() => false}
-                                    >
-                                        <div>
-                                            <UploadOutlined />
-                                            <div style={{ marginTop: 8 }}>Upload</div>
-                                        </div>
-                                    </Upload>
-                                </Form.Item>
-
-                                <Form.Item>
-                                    <Button
+                                    <Button 
                                         type="primary"
                                         htmlType="submit"
                                         loading={loading}
                                         size="large"
                                         block
+                                        onClick={() => form.setFieldsValue({ isPublished: true })}
                                     >
                                         {loading ? 'Publishing...' : 'Publish Post'}
+                                    </Button>
+                                </Form.Item>
+
+                                <Form.Item>
+                                    <Button
+                                        type="default"
+                                        loading={loading}
+                                        size="large"
+                                        block
+                                        onClick={() => {
+                                            form.setFieldsValue({ isPublished: false });
+                                            handleSaveDraft();
+                                        }}
+                                    >
+                                        {loading ? 'Saving...' : 'Save as Draft'}
                                     </Button>
                                 </Form.Item>
                             </Col>
                         </Row>
                     </Form>
-                ) : (
-                    <div>
-                        <Title level={4}>Preview Mode</Title>
-                        <p>Preview functionality would be implemented here...</p>
-                    </div>
                 )}
             </Card>
         </div>

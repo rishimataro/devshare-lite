@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Card,
     Typography,
@@ -28,57 +28,45 @@ import { useRouter } from 'next/navigation';
 const { Title, Text, Paragraph } = Typography;
 
 interface Post {
-    id: string;
+    _id: string;
     title: string;
-    excerpt: string;
-    author: string;
-    views: number;
-    likes: number;
-    comments: number;
+    content: string;
+    authorId: {
+        _id: string;
+        username: string;
+        email: string;
+    };
+    viewCount: number;
+    likes: string[];
     tags: string[];
     createdAt: string;
+    updatedAt: string;
 }
 
-// Mock data - replace with actual API calls
-const mockPosts: Post[] = [
-    {
-        id: '1',
-        title: 'Getting Started with Next.js 14',
-        excerpt: 'Learn the fundamentals of Next.js 14 and how to build modern web applications...',
-        author: 'John Doe',
-        views: 1234,
-        likes: 45,
-        comments: 12,
-        tags: ['Next.js', 'React', 'TypeScript'],
-        createdAt: '2024-01-15',
-    },
-    {
-        id: '2',
-        title: 'Advanced React Patterns',
-        excerpt: 'Explore advanced React patterns and best practices for building scalable applications...',
-        author: 'Jane Smith',
-        views: 892,
-        likes: 32,
-        comments: 8,
-        tags: ['React', 'Patterns', 'Advanced'],
-        createdAt: '2024-01-14',
-    },
-    {
-        id: '3',
-        title: 'Building APIs with NestJS',
-        excerpt: 'Learn how to create robust and scalable APIs using NestJS framework...',
-        author: 'Mike Johnson',
-        views: 567,
-        likes: 28,
-        comments: 15,
-        tags: ['NestJS', 'API', 'Node.js'],
-        createdAt: '2024-01-13',
-    },
-];
+import { getPosts } from '@/utils/postApi';
 
 const DashboardHome: React.FC = () => {
     const { data: session } = useSession();
     const router = useRouter();
+    const [posts, setPosts] = useState<Post[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            setLoading(true);
+            try {
+                console.log('Fetching posts from API...');
+                const data = await getPosts();
+                console.log('Posts received:', data);
+                setPosts(data);
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPosts();
+    }, []);
 
     const handleCreatePost = () => {
         router.push('/dashboard/createPosts');
@@ -114,50 +102,6 @@ const DashboardHome: React.FC = () => {
                 </Row>
             </Card>
 
-            {/* Statistics Cards */}
-            <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-                <Col xs={24} sm={12} md={6}>
-                    <Card>
-                        <Statistic
-                            title="Total Posts"
-                            value={12}
-                            prefix={<FileTextOutlined />}
-                            valueStyle={{ color: '#3f8600' }}
-                        />
-                    </Card>
-                </Col>
-                <Col xs={24} sm={12} md={6}>
-                    <Card>
-                        <Statistic
-                            title="Total Views"
-                            value={2847}
-                            prefix={<EyeOutlined />}
-                            valueStyle={{ color: '#1890ff' }}
-                        />
-                    </Card>
-                </Col>
-                <Col xs={24} sm={12} md={6}>
-                    <Card>
-                        <Statistic
-                            title="Total Likes"
-                            value={156}
-                            prefix={<HeartOutlined />}
-                            valueStyle={{ color: '#cf1322' }}
-                        />
-                    </Card>
-                </Col>
-                <Col xs={24} sm={12} md={6}>
-                    <Card>
-                        <Statistic
-                            title="Comments"
-                            value={89}
-                            prefix={<CommentOutlined />}
-                            valueStyle={{ color: '#722ed1' }}
-                        />
-                    </Card>
-                </Col>
-            </Row>
-
             {/* Recent Posts */}
             <Card
                 title={
@@ -174,22 +118,23 @@ const DashboardHome: React.FC = () => {
             >
                 <List
                     itemLayout="vertical"
-                    dataSource={mockPosts}
+                    dataSource={posts}
+                    loading={loading}
                     renderItem={(post) => (
                         <List.Item
-                            key={post.id}
+                            key={post._id}
                             actions={[
                                 <Space key="views">
                                     <EyeOutlined />
-                                    {post.views}
+                                    {post.viewCount}
                                 </Space>,
                                 <Space key="likes">
                                     <HeartOutlined />
-                                    {post.likes}
+                                    {post.likes.length}
                                 </Space>,
                                 <Space key="comments">
                                     <CommentOutlined />
-                                    {post.comments}
+                                    0
                                 </Space>,
                             ]}
                         >
@@ -198,7 +143,7 @@ const DashboardHome: React.FC = () => {
                                 title={
                                     <Button
                                         type="link"
-                                        onClick={() => handleViewPost(post.id)}
+                                        onClick={() => handleViewPost(post._id)}
                                         style={{ padding: 0, height: 'auto', fontWeight: 600 }}
                                     >
                                         {post.title}
@@ -207,11 +152,11 @@ const DashboardHome: React.FC = () => {
                                 description={
                                     <Space direction="vertical" size={4}>
                                         <Text type="secondary">
-                                            by {post.author} • {post.createdAt}
+                                            by {post.authorId?.username || 'Unknown'} • {new Date(post.createdAt).toLocaleDateString()}
                                         </Text>
                                         <Space wrap>
-                                            {post.tags.map((tag) => (
-                                                <Tag key={tag} color="blue">
+                                            {post.tags?.map((tag, index) => (
+                                                <Tag key={index} color="blue">
                                                     {tag}
                                                 </Tag>
                                             ))}
@@ -220,7 +165,7 @@ const DashboardHome: React.FC = () => {
                                 }
                             />
                             <Paragraph ellipsis={{ rows: 2 }} style={{ marginTop: 8 }}>
-                                {post.excerpt}
+                                {post.content.substring(0, 150)}...
                             </Paragraph>
                         </List.Item>
                     )}
