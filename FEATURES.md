@@ -12,7 +12,7 @@
   - Gửi email xác thực tự động
   - UI responsive với Ant Design
 
-![Đăng ký tài khoản](./screenshots/z6798815110281_1faaf221a78261edfd6b705d6574f5a9.jpg)
+![Đăng ký tài khoản](./screenshots/03_Register.jpg)
 
 #### 1.2 Xác thực email
 - **Mô tả:** Hệ thống xác thực email với mã OTP
@@ -22,7 +22,7 @@
   - Tính năng gửi lại mã xác thực
   - Template email đẹp mắt với Handlebars
 
-![Xác thực email](./screenshots/z6798815149645_69c5fce0d8b4ccd719c1118a8bee49ff.jpg)
+![Xác thực email](./screenshots/20_Verify.jpg)
 
 #### 1.3 Đăng nhập
 - **Mô tả:** Form đăng nhập an toàn với JWT
@@ -32,7 +32,7 @@
   - Error handling chi tiết
   - Session management với NextAuth.js
 
-![Đăng nhập](./screenshots/z6798815484709_34cfa25fbdbafc149fc013fbc39f2947.jpg)
+![Đăng nhập](./screenshots/02_Login.jpg)
 
 ### 2. Dashboard và Quản lý Nội dung
 
@@ -44,7 +44,7 @@
   - Quick stats overview
   - Modern UI với gradients
 
-![Dashboard](./screenshots/z6798815773604_0fc12be64792d42a725243f05b418f4b.jpg)
+![Dashboard](./screenshots/04_Dashboard.jpg)
 
 #### 2.2 Danh sách bài viết cá nhân
 - **Mô tả:** Quản lý bài viết của người dùng
@@ -55,7 +55,7 @@
   - Status badges với màu sắc phân biệt
   - Pagination support
 
-![Danh sách bài viết](./screenshots/z6798816874391_daf1ce992e225c86144dd164b28a22a1.jpg)
+![Danh sách bài viết](./screenshots/10_MyPosts.jpg)
 
 ### 3. Tạo và Chỉnh sửa Bài viết
 
@@ -69,7 +69,7 @@
   - Auto-save draft functionality
   - Status management (Draft/Published/Archived)
 
-![Editor bài viết](./screenshots/z6798817256376_f412f5e12eaed06d78615eb24e5cea7f.jpg)
+![Editor bài viết](./screenshots/12_EditPost.jpg)
 
 #### 3.2 Preview mode
 - **Mô tả:** Xem trước bài viết trước khi publish
@@ -79,7 +79,7 @@
   - Code syntax highlighting
   - Responsive preview
 
-![Preview mode](./screenshots/z6798819960532_4f95dc1838e49edbee6697d820e394df.jpg)
+![Preview mode](./screenshots/14_EditPost_Preview.jpg)
 
 ### 4. Hiển thị và Tương tác với Bài viết
 
@@ -92,7 +92,7 @@
   - Tag display
   - Author profile link
 
-![Chi tiết bài viết](./screenshots/z6798819960533_e5725970b0adb6dfbb585d3ec9b82a29.jpg)
+![Chi tiết bài viết](./screenshots/05_PostDetails.jpg)
 
 #### 4.2 Hệ thống Like
 - **Mô tả:** Tương tác xã hội với bài viết
@@ -113,17 +113,7 @@
   - User avatars và timestamps
   - Rich text support
 
-![Hệ thống bình luận](./screenshots/z6798820173838_bf8142bb974f384ca9e87b95e7bb1f13.jpg)
-
-#### 5.2 Vote system cho comments
-- **Mô tả:** Upvote/Downvote comments
-- **Tính năng:**
-  - Upvote/Downvote functionality
-  - Vote count display
-  - Prevent voting own comments
-  - Visual feedback cho votes
-
-![Vote system](./screenshots/z6798820374176_a882071fad825f00557ae8392c216367.jpg)
+![Hệ thống bình luận](./screenshots/06_PostDetails_Comment.jpg)
 
 ### 6. Profile và Social Features
 
@@ -136,7 +126,7 @@
   - Follow/Unfollow functionality
   - Follower/Following counts
 
-![User profile](./screenshots/z6798820683835_785bdff1efd20852b5afbdb64e65cdca.jpg)
+![User profile](./screenshots/17_Profile_Posts.jpg)
 
 #### 6.2 Follow system
 - **Mô tả:** Theo dõi tác giả yêu thích
@@ -145,6 +135,10 @@
   - Following/Followers lists
   - Profile navigation
   - Social statistics
+
+![Follow system](./screenshots/18_Profile_Following.jpg)
+![Follow system](./screenshots/19_Profile_Followed.jpg)
+
 
 ### 7. Tìm kiếm và Khám phá
 
