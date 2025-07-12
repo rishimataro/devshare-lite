@@ -38,23 +38,23 @@
 ## Công nghệ sử dụng
 
 ### Backend (NestJS)
-- **Framework:** NestJS - Framework Node.js mạnh mẽ, hỗ trợ TypeScript native và kiến trúc module
-- **Database:** MongoDB với Mongoose ODM - Database NoSQL linh hoạt, phù hợp với cấu trúc dữ liệu đa dạng
-- **Authentication:** JWT + Passport.js - Bảo mật cao với JWT tokens và strategies đa dạng
-- **Validation:** Class-validator + Class-transformer - Validate dữ liệu đầu vào an toàn
-- **Email Service:** Nodemailer + Handlebars - Gửi email xác thực với template đẹp mắt
-- **File Upload:** Multer + Cloudinary - Upload và tối ưu hình ảnh trên cloud
-- **API Documentation:** Swagger - Tự động sinh documentation API
-- **Configuration:** @nestjs/config - Quản lý environment variables an toàn
+- **Framework:** NestJS - Framework Node.js
+- **Database:** MongoDB với Mongoose ODM - Database NoSQL
+- **Authentication:** JWT + Passport.js
+- **Validation:** Class-validator + Class-transformer
+- **Email Service:** Nodemailer + Handlebars
+- **File Upload:** Multer + Cloudinary
+- **API Documentation:** Swagger
+- **Configuration:** @nestjs/confi
 
 ### Frontend (Next.js)
-- **Framework:** Next.js 15 - React framework với SSR/SSG, routing tự động và optimization
-- **UI Library:** Ant Design 5 - Component library chuyên nghiệp với theme system
-- **Styling:** Styled-components - CSS-in-JS với dynamic styling
-- **Authentication:** NextAuth.js - Giải pháp auth toàn diện cho Next.js
-- **HTTP Client:** Axios - HTTP client với interceptor và error handling
-- **Markdown:** React-markdown + Rehype-highlight - Render markdown với syntax highlighting
-- **Date handling:** Day.js - Thư viện xử lý thời gian nhẹ và mạnh mẽ
+- **Framework:** Next.js 15
+- **UI Library:** Ant Design 5
+- **Styling:** Styled-components
+- **Authentication:** NextAuth.js 
+- **HTTP Client:** Axios
+- **Markdown:** React-markdown + Rehype-highlight
+- **Date handling:** Day.js
 - **State Management:** React hooks + Session management
 
 ### Lý do lựa chọn công nghệ:
