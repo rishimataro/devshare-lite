@@ -134,7 +134,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 {fileList.length >= maxImages ? null : uploadButton}
             </Upload>
 
-            <div style={{ marginTop: 8, fontSize: '12px', color: '#666' }}>
+            <div style={{ marginTop: 8, fontSize: '12px', color: 'var(--color-text)' }}>
                 Hỗ trợ: JPG, PNG, GIF, WebP. Tối đa {maxImages} ảnh, mỗi ảnh không quá 10MB.
             </div>
 

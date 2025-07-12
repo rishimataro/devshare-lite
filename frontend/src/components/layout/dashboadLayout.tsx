@@ -77,7 +77,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             key: 'logout',
             label: 'Đăng xuất',
             icon: <LogoutOutlined />,
-            onClick: () => signOut({ callbackUrl: '/auth/login' }),
+            onClick: () => signOut({ callbackUrl: '' }),
         },
     ];
 
@@ -86,7 +86,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     };
 
     return (
-        <Layout style={{ minHeight: '100vh' }}>
+        <Layout style={{ minHeight: '100vh', background: 'bodyBg' }}>
             <Sider
                 trigger={null}
                 collapsible
@@ -98,10 +98,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     left: 0,
                     top: 0,
                     bottom: 0,
+                    background: 'var(--color-bg-sidebar)',
                 }}
             >
                 <div style={{
-                    height: 32,
+                    height: 64,
                     margin: 16,
                     background: 'rgba(255, 255, 255, 0.2)',
                     borderRadius: borderRadiusLG,
@@ -110,7 +111,19 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     justifyContent: 'center',
                     color: 'white',
                     fontWeight: 'bold',
+                    gap: '8px',
                 }}>
+                    {!collapsed && (
+                        <img 
+                            src="/logo.png" 
+                            alt="DevShare Logo" 
+                            style={{
+                                width: 24,
+                                height: 24,
+                                objectFit: 'contain'
+                            }}
+                        />
+                    )}
                     {collapsed ? 'DS' : 'DevShare'}
                 </div>
                 <Menu
@@ -121,7 +134,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     onClick={handleMenuClick}
                 />
             </Sider>
-            <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'margin-left 0.2s' }}>
+            <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'margin-left 0.2s', background: 'var(--color-primary)' }}>
                 <Header
                     style={{
                         padding: 0,
@@ -133,7 +146,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        borderBottom: '1px solid #f0f0f0',
+                        borderBottom: '1px solid var(--color-accent)',
                     }}
                 >
                     <Button
@@ -158,7 +171,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                                     size="default" 
                                     icon={<UserOutlined />}
                                 />
-                                <span style={{ color: '#666' }}>
+                                <span style={{ color: 'var(--color-text)' }}>
                                     {session?.user?.username || 'User'}
                                 </span>
                             </Space>
@@ -170,8 +183,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         margin: '24px 16px',
                         padding: 24,
                         minHeight: 280,
-                        background: colorBgContainer,
+                        background: 'var(--color-bg-content)',
                         borderRadius: borderRadiusLG,
+                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
                     }}
                 >
                     {children}

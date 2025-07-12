@@ -37,11 +37,11 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
             <div style={{
                 padding: '40px',
                 textAlign: 'center',
-                border: '2px dashed #d9d9d9',
+                border: '2px dashed var(--color-accent)',
                 borderRadius: '8px',
-                background: '#fafafa'
+                background: 'var(--color-primary-light)'
             }} className={className}>
-                <PictureOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+                <PictureOutlined style={{ fontSize: '48px', color: 'var(--color-accent)', marginBottom: '16px' }} />
                 <Typography.Text type="secondary">
                     Chưa có hình ảnh nào
                 </Typography.Text>
@@ -114,8 +114,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                                 overflow: 'hidden',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s ease',
-                                border: '1px solid #d9d9d9',
-                                backgroundColor: '#f5f5f5',
+                                border: '1px solid var(--color-accent)',
+                                backgroundColor: 'var(--color-primary-light)',
                                 minWidth: layout === 'carousel' ? '200px' : 'auto',
                                 flexShrink: layout === 'carousel' ? 0 : 1
                             }}
@@ -366,7 +366,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                                         overflow: 'hidden',
                                         cursor: 'pointer',
                                         border: currentIndex === index 
-                                            ? '2px solid #1890ff' 
+                                            ? '2px solid var(--color-secondary)' 
                                             : '2px solid transparent',
                                         opacity: currentIndex === index ? 1 : 0.7,
                                         transition: 'all 0.2s ease'

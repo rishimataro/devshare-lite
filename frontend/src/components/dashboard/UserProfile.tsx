@@ -17,6 +17,7 @@ import {
     Statistic
 } from 'antd';
 import {
+    ArrowLeftOutlined,
     UserOutlined,
     UserAddOutlined,
     UserDeleteOutlined,
@@ -157,21 +158,31 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
 
     return (
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '20px' }}>
+            {/* Back Button */}
+            <Button 
+                icon={<ArrowLeftOutlined />} 
+                onClick={() => router.back()}
+                size="large"
+                style={{ marginBottom: 24 }}
+            >
+                Quay lại
+            </Button>
+
             {/* Profile Header */}
-            <Card>
-                <Row align="middle" gutter={24}>
-                    <Col>
+            <Card style={{ marginBottom: 24 }}>
+                <Row align="middle" gutter={24} wrap>
+                    <Col xs={24} sm={8} md={6} style={{ textAlign: 'center', marginBottom: 16 }}>
                         <Avatar
                             size={100}
                             src={user.profile?.avatar}
                             icon={<UserOutlined />}
                         />
                     </Col>
-                    <Col flex="auto">
-                        <Title level={2} style={{ margin: 0 }}>
+                    <Col xs={24} sm={16} md={18}>
+                        <Title level={2} style={{ margin: 0, wordBreak: 'break-word' }}>
                             {user.username}
                         </Title>
-                        <Text type="secondary" style={{ fontSize: '16px' }}>
+                        <Text type="secondary" style={{ fontSize: '16px', wordBreak: 'break-all' }}>
                             {user.email}
                         </Text>
                         {user.profile?.bio && (
@@ -179,7 +190,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
                                 {user.profile.bio}
                             </Paragraph>
                         )}
-                        <Space style={{ marginTop: 16 }}>
+                        <Space style={{ marginTop: 16, flexWrap: 'wrap' }}>
                             <Statistic
                                 title="Đang theo dõi"
                                 value={user.followingCount}
@@ -197,7 +208,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
                             />
                         </Space>
                     </Col>
-                    <Col>
+                    <Col xs={24} style={{ textAlign: 'center', marginTop: 16 }}>
                         {!isOwnProfile && session && (
                             <Button
                                 type={isFollowing ? "default" : "primary"}
@@ -214,7 +225,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
             </Card>
 
             {/* Profile Content */}
-            <Card style={{ marginTop: 24 }}>
+            <Card>
                 <Tabs
                     defaultActiveKey="posts"
                     items={[

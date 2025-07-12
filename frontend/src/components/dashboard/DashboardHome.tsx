@@ -75,27 +75,48 @@ const DashboardHome: React.FC = () => {
     return (
         <div>
             {/* Welcome Section */}
-            <Card style={{ marginBottom: 24 }}>
-                <Row align="middle" justify="space-between">
-                    <Col>
-                        <Title level={2} style={{ margin: 0 }}>
-                            Chào mừng trở lại, {session?.user?.username || 'User'}!
-                        </Title>
-                        <Paragraph style={{ margin: '8px 0 0 0', fontSize: 16, color: '#666' }}>
-                            Bạn đã sẵn sàng để chia sẻ kiến thức của mình với cộng đồng lập trình viên chưa?
-                        </Paragraph>
-                    </Col>
-                    <Col>
-                        <Button
-                            type="primary"
-                            size="large"
-                            icon={<PlusOutlined />}
-                            onClick={handleCreatePost}
-                        >
-                            Tạo bài viết mới
-                        </Button>
-                    </Col>
-                </Row>
+            <Card 
+                style={{ 
+                    marginBottom: 24,
+                    backgroundImage: 'url("/coverHome.jpg")',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    position: 'relative',
+                    minHeight: '200px'
+                }}
+            >
+                <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    borderRadius: '6px'
+                }}></div>
+                <div style={{ position: 'relative', zIndex: 2 }}>
+                    <Row align="middle" justify="space-between">
+                        <Col>
+                            <Title level={2} style={{ margin: 0, color: 'white' }}>
+                                Chào mừng trở lại, {session?.user?.username || 'User'}!
+                            </Title>
+                            <Paragraph style={{ margin: '8px 0 0 0', fontSize: 16, color: 'white' }}>
+                                Đã đến lúc lan tỏa kiến thức của bạn tới cộng đồng lập trình viên rồi! Bạn đã sẵn sàng chưa?
+                            </Paragraph>
+                        </Col>
+                        <Col>
+                            <Button
+                                type="primary"
+                                size="large"
+                                icon={<PlusOutlined />}
+                                onClick={handleCreatePost}
+                            >
+                                Tạo bài viết mới
+                            </Button>
+                        </Col>
+                    </Row>
+                </div>
             </Card>
 
             {/* Recent Posts */}

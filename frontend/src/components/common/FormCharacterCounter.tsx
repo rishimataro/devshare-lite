@@ -22,10 +22,10 @@ const FormCharacterCounter: React.FC<FormCharacterCounterProps> = ({
     className = ''
 }) => {
     const getColor = () => {
-        if (max && current > max) return '#ff4d4f';
-        if (min && current < min) return '#ff4d4f';
-        if (max && current > max * 0.9) return '#faad14';
-        return '#999';
+        if (max && current > max) return 'var(--color-primary)';
+        if (min && current < min) return 'var(--color-primary)';
+        if (max && current > max * 0.9) return 'var(--color-accent)';
+        return 'var(--color-text)';
     };
 
     const getCounterText = () => {

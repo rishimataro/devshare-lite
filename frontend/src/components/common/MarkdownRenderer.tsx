@@ -23,7 +23,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     }
 
     const formatInlineText = (text: string) => {
-        let formatted = text.replace(/`([^`]+)`/g, '<code style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-family: SFMono-Regular, Consolas, \\"Liberation Mono\\", Menlo, monospace; font-size: 85%; color: #d73a49;">$1</code>');
+        let formatted = text.replace(/`([^`]+)`/g, '<code style="background: var(--color-primary-light); padding: 2px 6px; border-radius: 3px; font-family: SFMono-Regular, Consolas, \\"Liberation Mono\\", Menlo, monospace; font-size: 85%; color: var(--color-primary);">$1</code>');
 
         formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
 
@@ -31,7 +31,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
 
         formatted = formatted.replace(/~~([^~]+)~~/g, '<del>$1</del>');
 
-        formatted = formatted.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: #0366d6; text-decoration: none;" target="_blank" rel="noopener noreferrer">$1</a>');
+        formatted = formatted.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: var(--color-secondary); text-decoration: none;" target="_blank" rel="noopener noreferrer">$1</a>');
 
         return <span dangerouslySetInnerHTML={{ __html: formatted }} />;
     };
@@ -53,8 +53,8 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                     inCodeBlock = false;
                     renderedLines.push(
                         <div key={`code-${index}`} style={{ 
-                            background: '#f6f8fa', 
-                            border: '1px solid #e1e4e8',
+                            background: 'var(--color-secondary-light)', 
+                            border: '1px solid var(--color-accent)',
                             padding: '16px', 
                             borderRadius: '6px', 
                             margin: '16px 0', 
@@ -65,7 +65,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                         }}>
                             {codeBlockLanguage && (
                                 <div style={{ 
-                                    color: '#586069', 
+                                    color: 'var(--color-text)', 
                                     fontSize: '12px', 
                                     marginBottom: '8px',
                                     fontWeight: '600'
@@ -95,7 +95,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                         fontWeight: '600', 
                         marginTop: '24px', 
                         marginBottom: '16px',
-                        borderBottom: '1px solid #eaecef',
+                        borderBottom: '1px solid var(--color-accent)',
                         paddingBottom: '10px'
                     }}>
                         {line.substring(2)}
@@ -110,7 +110,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                         fontWeight: '600', 
                         marginTop: '24px', 
                         marginBottom: '16px',
-                        borderBottom: '1px solid #eaecef',
+                        borderBottom: '1px solid var(--color-accent)',
                         paddingBottom: '8px'
                     }}>
                         {line.substring(3)}
@@ -180,10 +180,10 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
             if (line.startsWith('> ')) {
                 renderedLines.push(
                     <blockquote key={index} style={{
-                        borderLeft: '4px solid #dfe2e5',
+                        borderLeft: '4px solid var(--color-secondary)',
                         paddingLeft: '16px',
                         margin: '16px 0',
-                        color: '#6a737d',
+                        color: 'var(--color-text)',
                         fontStyle: 'italic'
                     }}>
                         {formatInlineText(line.substring(2))}
@@ -196,7 +196,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                 renderedLines.push(
                     <hr key={index} style={{
                         border: 'none',
-                        borderTop: '1px solid #eaecef',
+                        borderTop: '1px solid var(--color-accent)',
                         margin: '24px 0'
                     }} />
                 );
@@ -212,7 +212,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                 <p key={index} style={{ 
                     marginBottom: '16px', 
                     lineHeight: '1.6',
-                    color: '#24292e'
+                    color: 'var(--color-text)'
                 }}>
                     {formatInlineText(line)}
                 </p>

@@ -112,7 +112,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto' }} className={className}>
             {showHeader && (
-                <Title level={4} style={{ marginBottom: '24px', color: '#1890ff' }}>
+                <Title level={4} style={{ marginBottom: '24px', color: 'var(--color-secondary)' }}>
                     <EyeOutlined /> Preview Mode
                 </Title>
             )}
@@ -141,7 +141,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
                 <Divider />
 
                 {/* Post Title */}
-                <Typography.Title level={2} style={{ marginBottom: '16px', color: '#262626' }}>
+                <Typography.Title level={2} style={{ marginBottom: '16px', color: 'var(--color-text)' }}>
                     {finalFormData.title || 'Tiêu đề bài viết...'}
                 </Typography.Title>
 
@@ -153,7 +153,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
                 {/* Images Section */}
                 {finalFormData.images && finalFormData.images.length > 0 && (
                     <div style={{ marginBottom: '20px' }}>
-                        <Typography.Title level={5} style={{ marginBottom: '12px', color: '#1890ff', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <Typography.Title level={5} style={{ marginBottom: '12px', color: 'var(--color-secondary)', display: 'flex', alignItems: 'center', gap: 8 }}>
                             <PictureOutlined /> Hình ảnh ({finalFormData.images.length})
                         </Typography.Title>
                         <ImageGallery 

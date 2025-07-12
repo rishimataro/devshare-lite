@@ -25,6 +25,7 @@ import {
 import { useRouter, useParams } from 'next/navigation';
 import { getPostByIdForOwner, updatePost } from '@/utils/postApi';
 import ImageUpload from '@/components/input/ImageUpload';
+import PostPreview from '@/components/common/PostPreview';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -59,6 +60,7 @@ const EditPostForm: React.FC = () => {
     const [initialLoading, setInitialLoading] = useState(true);
     const [post, setPost] = useState<Post | null>(null);
     const [preview, setPreview] = useState(false);
+    const [formValues, setFormValues] = useState<any>({}); // Track form values for preview
     const router = useRouter();
     const params = useParams();
     const { message } = App.useApp();
@@ -99,6 +101,15 @@ const EditPostForm: React.FC = () => {
                 setPost(postData);
                 
                 form.setFieldsValue({
+                    title: postData.title,
+                    content: postData.content,
+                    tags: postData.tags || [],
+                    images: postData.images || [],
+                    status: postData.status,
+                });
+                
+                // Set initial form values for preview
+                setFormValues({
                     title: postData.title,
                     content: postData.content,
                     tags: postData.tags || [],
@@ -308,13 +319,6 @@ const EditPostForm: React.FC = () => {
                             Quay lại
                         </Button>
                         <Button
-                            icon={<SaveOutlined />}
-                            onClick={handleSaveDraft}
-                            loading={loading}
-                        >
-                            Lưu bản nháp
-                        </Button>
-                        <Button
                             type="default"
                             icon={<EyeOutlined />}
                             onClick={() => setPreview(!preview)}
@@ -330,6 +334,9 @@ const EditPostForm: React.FC = () => {
                         name="editPost"
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
+                        onValuesChange={(changedValues, allValues) => {
+                            setFormValues(allValues);
+                        }}
                         layout="vertical"
                     >
                         <Row gutter={[16, 0]}>
@@ -430,10 +437,16 @@ const EditPostForm: React.FC = () => {
                         </Row>
                     </Form>
                 ) : (
-                    <div>
-                        <Title level={4}>Chế độ xem trước</Title>
-                        <p>Chức năng xem trước sẽ được triển khai tại đây...</p>
-                    </div>
+                    <PostPreview 
+                        form={form}
+                        data={{
+                            ...formValues,
+                            author: {
+                                name: post?.authorId?.username || 'Your Name'
+                            },
+                            createdAt: post?.createdAt
+                        }}
+                    />
                 )}
             </Card>
         </div>

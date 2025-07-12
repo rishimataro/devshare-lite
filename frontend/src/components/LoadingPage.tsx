@@ -14,15 +14,15 @@ const LoadingPage: React.FC<LoadingPageProps> = ({ message = 'Đang tải dữ l
         height: '100vh',
         width: '100%',
         display: 'flex',
-        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f5f5f5',
-        gap: '20px',
         animation: 'fadeIn 0.3s ease-in-out',
       }}
     >
-      <Spin size="large" tip={message} />
+      <Spin tip={message} size="large">
+        <div style={{ width: 100, height: 100 }} />
+      </Spin>
     </div>
   );
 };

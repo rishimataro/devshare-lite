@@ -58,7 +58,7 @@ const PostImages: React.FC<PostImagesProps> = ({ images, maxDisplay = 4 }) => {
                                 cursor: 'pointer',
                                 overflow: 'hidden',
                                 borderRadius: 8,
-                                border: '1px solid #f0f0f0'
+                                border: '1px solid var(--color-accent)'
                             }}
                             onClick={() => handlePreview(image, index)}
                         >
