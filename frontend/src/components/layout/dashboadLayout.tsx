@@ -61,31 +61,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             icon: <FileTextOutlined />,
             label: 'My Posts',
         },
-        {
-            key: '/dashboard/votePosts',
-            icon: <HeartOutlined />,
-            label: 'Vote Posts',
-        },
-        {
-            key: '/dashboard/bookmarks',
-            icon: <BookOutlined />,
-            label: 'Bookmarks',
-        },
     ];
 
-    // Dropdown menu for user avatar
     const userMenuItems: MenuProps['items'] = [
         {
             key: 'profile',
             label: 'Profile',
             icon: <UserOutlined />,
-            onClick: () => router.push('/dashboard/profile'),
-        },
-        {
-            key: 'settings',
-            label: 'Settings',
-            icon: <SettingOutlined />,
-            onClick: () => router.push('/dashboard/settings'),
+            onClick: () => {
+                if (session?.user?._id) {
+                    router.push(`/dashboard/profile/${session.user._id}`);
+                }
+            },
         },
         {
             type: 'divider',
