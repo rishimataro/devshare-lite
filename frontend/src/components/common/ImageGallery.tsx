@@ -164,7 +164,6 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                                 }}
                                 onError={() => {
                                     setImageLoading(prev => ({ ...prev, [index]: false }));
-                                    console.error(`Failed to load image: ${image}`);
                                 }}
                             />
                             
@@ -216,25 +215,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                 ))}
             </div>
 
-            {/* Help text */}
-            {images.length > 0 && (
-                <div style={{
-                    fontSize: '12px',
-                    color: '#666',
-                    textAlign: 'center',
-                    marginTop: '8px',
-                    padding: '8px',
-                    background: '#f9f9f9',
-                    borderRadius: '4px',
-                    border: '1px solid #e8e8e8'
-                }}>
-                    💡 <strong>Mẹo:</strong> Click vào ảnh để xem phóng to • 
-                    {images.length > 1 && ' Sử dụng mũi tên ← → hoặc click thumbnail để chuyển ảnh • '}
-                    Nhấn ESC để đóng
-                </div>
-            )}
-
-            {/* Full-screen Preview Modal */}
+            {/* Preview Modal */}
             {previewVisible && (
                 <div style={{
                     position: 'fixed',

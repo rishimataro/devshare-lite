@@ -30,15 +30,15 @@ const FormCharacterCounter: React.FC<FormCharacterCounterProps> = ({
 
     const getCounterText = () => {
         if (showMax && showMin && max && min) {
-            return `${current} characters (min: ${min}, max: ${max})`;
+            return `${current} kí tự (ít nhất: ${min}, tối đa: ${max})`;
         }
         if (showMax && max) {
             return `${current}/${max}`;
         }
         if (showMin && min) {
-            return `${current} characters (min: ${min})`;
+            return `${current} kí tự (ít nhất: ${min})`;
         }
-        return `${current} characters`;
+        return `${current} kí tự`;
     };
 
     return (

@@ -23,26 +23,20 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     }
 
     const formatInlineText = (text: string) => {
-        // Handle inline code first
         let formatted = text.replace(/`([^`]+)`/g, '<code style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-family: SFMono-Regular, Consolas, \\"Liberation Mono\\", Menlo, monospace; font-size: 85%; color: #d73a49;">$1</code>');
-        
-        // Handle bold text
+
         formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-        
-        // Handle italic text
+
         formatted = formatted.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-        
-        // Handle strikethrough
+
         formatted = formatted.replace(/~~([^~]+)~~/g, '<del>$1</del>');
-        
-        // Handle links
+
         formatted = formatted.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: #0366d6; text-decoration: none;" target="_blank" rel="noopener noreferrer">$1</a>');
 
         return <span dangerouslySetInnerHTML={{ __html: formatted }} />;
     };
 
     const renderContent = () => {
-        // Split content into lines and process each line
         const lines = content.split('\n');
         const renderedLines: React.ReactNode[] = [];
         let inCodeBlock = false;
@@ -50,15 +44,12 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
         let codeBlockLanguage = '';
 
         lines.forEach((line, index) => {
-            // Handle code blocks
             if (line.startsWith('```')) {
                 if (!inCodeBlock) {
-                    // Starting code block
                     inCodeBlock = true;
                     codeBlockLanguage = line.substring(3).trim();
                     codeBlockContent = [];
                 } else {
-                    // Ending code block
                     inCodeBlock = false;
                     renderedLines.push(
                         <div key={`code-${index}`} style={{ 
@@ -97,7 +88,6 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                 return;
             }
 
-            // Handle headers
             if (line.startsWith('# ')) {
                 renderedLines.push(
                     <h1 key={index} style={{ 
@@ -155,7 +145,6 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                 return;
             }
 
-            // Handle lists
             if (line.match(/^[\s]*[-\*\+]\s/)) {
                 const indentLevel = (line.match(/^(\s*)/)?.[1]?.length || 0) / 2;
                 const listItem = line.replace(/^[\s]*[-\*\+]\s/, '');
@@ -172,7 +161,6 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                 return;
             }
 
-            // Handle numbered lists
             if (line.match(/^[\s]*\d+\.\s/)) {
                 const indentLevel = (line.match(/^(\s*)/)?.[1]?.length || 0) / 2;
                 const listItem = line.replace(/^[\s]*\d+\.\s/, '');
@@ -189,7 +177,6 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                 return;
             }
 
-            // Handle blockquotes
             if (line.startsWith('> ')) {
                 renderedLines.push(
                     <blockquote key={index} style={{
@@ -205,7 +192,6 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                 return;
             }
 
-            // Handle horizontal rules
             if (line.trim() === '---' || line.trim() === '***') {
                 renderedLines.push(
                     <hr key={index} style={{
@@ -217,13 +203,11 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                 return;
             }
 
-            // Handle empty lines
             if (line.trim() === '') {
                 renderedLines.push(<br key={index} />);
                 return;
             }
 
-            // Regular paragraph
             renderedLines.push(
                 <p key={index} style={{ 
                     marginBottom: '16px', 

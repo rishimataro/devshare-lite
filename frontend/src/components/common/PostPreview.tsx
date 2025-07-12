@@ -35,13 +35,11 @@ interface PostPreviewProps {
 const PostPreview: React.FC<PostPreviewProps> = ({ 
     form, 
     data,
-    showGuide = true,
     showHeader = true,
     className = ''
 }) => {
     const [formData, setFormData] = useState<any>({});
 
-    // Try Form.useWatch first, but with error handling
     let watchedData: any = {};
     try {
         if (form) {
@@ -65,17 +63,13 @@ const PostPreview: React.FC<PostPreviewProps> = ({
 
     useEffect(() => {
         const updateFormData = () => {
-            console.log('PostPreview: Form instance:', form);
             
             if (form) {
                 try {
                     const values = form.getFieldsValue();
-                    console.log('PostPreview: Form.getFieldsValue():', values);
-                    
-                    // Also try individual field values
+
                     const titleValue = form.getFieldValue('title');
                     const contentValue = form.getFieldValue('content');
-                    console.log('PostPreview: Individual values - title:', titleValue, 'content:', contentValue);
                     
                     setFormData(values);
                 } catch (error) {
@@ -87,16 +81,13 @@ const PostPreview: React.FC<PostPreviewProps> = ({
             }
         };
 
-        // Initial update
         updateFormData();
 
-        // Set up interval to check for changes
         const interval = setInterval(updateFormData, 500);
 
         return () => clearInterval(interval);
     }, [form, data]);
 
-    // Combine all data sources - prioritize data prop first
     const finalFormData = {
         title: data?.title || watchedData.title || formData.title || '',
         content: data?.content || watchedData.content || formData.content || '',
@@ -106,8 +97,6 @@ const PostPreview: React.FC<PostPreviewProps> = ({
         author: data?.author,
         createdAt: data?.createdAt
     };
-
-    console.log('PostPreview: Final form data:', finalFormData);
 
     const formatDate = (dateString?: string) => {
         const date = dateString ? new Date(dateString) : new Date();
@@ -153,7 +142,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
 
                 {/* Post Title */}
                 <Typography.Title level={2} style={{ marginBottom: '16px', color: '#262626' }}>
-                    {finalFormData.title || 'Your Post Title'}
+                    {finalFormData.title || 'Tiêu đề bài viết...'}
                 </Typography.Title>
 
                 {/* Post Content */}
@@ -165,7 +154,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
                 {finalFormData.images && finalFormData.images.length > 0 && (
                     <div style={{ marginBottom: '20px' }}>
                         <Typography.Title level={5} style={{ marginBottom: '12px', color: '#1890ff', display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <PictureOutlined /> Hình ảnh đính kèm ({finalFormData.images.length})
+                            <PictureOutlined /> Hình ảnh ({finalFormData.images.length})
                         </Typography.Title>
                         <ImageGallery 
                             images={finalFormData.images} 
@@ -204,7 +193,7 @@ const PostPreview: React.FC<PostPreviewProps> = ({
                 {/* Preview Note */}
                 <Divider />
                 <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
-                    📝 This is a preview of how your post will appear to readers.
+                    Đây là bản xem trước bài đăng của bạn sẽ hiển thị như thế nào với người đọc.
                 </Typography.Text>
             </Card>
             

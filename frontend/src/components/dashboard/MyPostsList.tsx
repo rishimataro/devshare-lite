@@ -46,7 +46,6 @@ interface Post {
     };
 }
 
-// Mock data
 const mockPosts: Post[] = [];
 
 const MyPostsList: React.FC = () => {
@@ -58,7 +57,6 @@ const MyPostsList: React.FC = () => {
     const { message, modal } = App.useApp();
     const { data: session } = useSession();
 
-    // Fetch posts when component mounts
     useEffect(() => {
         const fetchMyPosts = async () => {
             if (!session?.user) return;
@@ -68,8 +66,8 @@ const MyPostsList: React.FC = () => {
                 const data = await getMyPosts();
                 setPosts(data as Post[]);
             } catch (error: any) {
-                console.error('Error fetching my posts:', error);
-                
+                console.error('Không thể tải bài viết:', error);
+
                 // Handle authentication errors specifically
                 if (error.response?.status === 401) {
                     message.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
@@ -95,18 +93,18 @@ const MyPostsList: React.FC = () => {
 
     const handleDelete = async (postId: string) => {
         modal.confirm({
-            title: 'Are you sure you want to delete this post?',
-            content: 'This action cannot be undone.',
-            okText: 'Yes, Delete',
+            title: 'Bạn có chắc chắn muốn xóa bài viết này?',
+            content: 'Hành động này không thể hoàn tác.',
+            okText: 'Có, Xóa',
             okType: 'danger',
-            cancelText: 'Cancel',
+            cancelText: 'Hủy',
             onOk: async () => {
                 try {
                     await deletePost(postId);
                     setPosts(posts.filter(post => post._id !== postId));
-                    message.success('Post deleted successfully');
+                    message.success('Đã xóa bài viết thành công');
                 } catch (error) {
-                    console.error('Error deleting post:', error);
+                    console.error('Không thể xóa bài viết:', error);
                     message.error('Không thể xóa bài viết');
                 }
             },
@@ -128,7 +126,7 @@ const MyPostsList: React.FC = () => {
 
     const columns: ColumnsType<Post> = [
         {
-            title: 'Title',
+            title: 'Tiêu đề',
             dataIndex: 'title',
             key: 'title',
             sorter: (a, b) => a.title.localeCompare(b.title),
@@ -143,13 +141,13 @@ const MyPostsList: React.FC = () => {
             ),
         },
         {
-            title: 'Status',
+            title: 'Tình trạng',
             dataIndex: 'status',
             key: 'status',
             filters: [
-                { text: 'Published', value: 'published' },
-                { text: 'Draft', value: 'draft' },
-                { text: 'Archived', value: 'archived' },
+                { text: 'Đã xuất bản', value: 'published' },
+                { text: 'Bản nháp', value: 'draft' },
+                { text: 'Lưu trữ', value: 'archived' },
             ],
             onFilter: (value, record) => record.status === value,
             render: (status) => (
@@ -176,35 +174,35 @@ const MyPostsList: React.FC = () => {
             ),
         },
         {
-            title: 'Views',
+            title: 'Lượt xem',
             dataIndex: 'viewCount',
             key: 'viewCount',
             sorter: (a, b) => a.viewCount - b.viewCount,
             render: (viewCount) => viewCount.toLocaleString(),
         },
         {
-            title: 'Likes',
+            title: 'Lượt thích',
             dataIndex: 'likes',
             key: 'likes',
             sorter: (a, b) => a.likes.length - b.likes.length,
             render: (likes: string[]) => likes.length,
         },
         {
-            title: 'Created',
+            title: 'Thời gian tạo',
             dataIndex: 'createdAt',
             key: 'createdAt',
             sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
             render: (createdAt) => new Date(createdAt).toLocaleDateString('vi-VN'),
         },
         {
-            title: 'Updated',
+            title: 'Thời gian cập nhật',
             dataIndex: 'updatedAt',
             key: 'updatedAt',
             sorter: (a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),
             render: (updatedAt) => new Date(updatedAt).toLocaleDateString('vi-VN'),
         },
         {
-            title: 'Actions',
+            title: 'Thao tác',
             key: 'actions',
             render: (_, record) => (
                 <Dropdown
@@ -212,13 +210,13 @@ const MyPostsList: React.FC = () => {
                         items: [
                             {
                                 key: 'view',
-                                label: 'View',
+                                label: 'Xem chi tiết',
                                 icon: <EyeOutlined />,
                                 onClick: () => handleView(record._id),
                             },
                             {
                                 key: 'edit',
-                                label: 'Edit',
+                                label: 'Chỉnh sửa',
                                 icon: <EditOutlined />,
                                 onClick: () => handleEdit(record._id),
                             },
@@ -227,7 +225,7 @@ const MyPostsList: React.FC = () => {
                             },
                             {
                                 key: 'delete',
-                                label: 'Delete',
+                                label: 'Xóa',
                                 icon: <DeleteOutlined />,
                                 danger: true,
                                 onClick: () => handleDelete(record._id),
@@ -256,7 +254,7 @@ const MyPostsList: React.FC = () => {
                 title={
                     <Space>
                         <Title level={3} style={{ margin: 0 }}>
-                            My Posts
+                            Bài viết của tôi
                         </Title>
                     </Space>
                 }
@@ -266,7 +264,7 @@ const MyPostsList: React.FC = () => {
                         icon={<PlusOutlined />}
                         onClick={() => router.push('/dashboard/createPosts')}
                     >
-                        Create New Post
+                        Tạo bài viết mới
                     </Button>
                 }
             >
@@ -284,10 +282,10 @@ const MyPostsList: React.FC = () => {
                             onChange={setStatusFilter}
                             style={{ width: 120 }}
                         >
-                            <Option value="all">All Status</Option>
-                            <Option value="published">Published</Option>
-                            <Option value="draft">Draft</Option>
-                            <Option value="archived">Archived</Option>
+                            <Option value="all">Tất cả trạng thái</Option>
+                            <Option value="published">Đã xuất bản</Option>
+                            <Option value="draft">Bản nháp</Option>
+                            <Option value="archived">Lưu trữ</Option>
                         </Select>
                     </Space>
                 </Space>

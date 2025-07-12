@@ -6,13 +6,11 @@ import {
     Typography,
     Row,
     Col,
-    Statistic,
     List,
     Avatar,
     Button,
     Space,
     Tag,
-    Divider,
 } from 'antd';
 import {
     FileTextOutlined,
@@ -55,12 +53,10 @@ const DashboardHome: React.FC = () => {
         const fetchPosts = async () => {
             setLoading(true);
             try {
-                console.log('Fetching posts from API...');
                 const data = await getPosts();
-                console.log('Posts received:', data);
                 setPosts(data);
             } catch (error) {
-                console.error('Error fetching posts:', error);
+                console.error('Không thể tải bài viết:', error);
             } finally {
                 setLoading(false);
             }
@@ -83,10 +79,10 @@ const DashboardHome: React.FC = () => {
                 <Row align="middle" justify="space-between">
                     <Col>
                         <Title level={2} style={{ margin: 0 }}>
-                            Welcome back, {session?.user?.username || 'User'}! 👋
+                            Chào mừng trở lại, {session?.user?.username || 'User'}!
                         </Title>
                         <Paragraph style={{ margin: '8px 0 0 0', fontSize: 16, color: '#666' }}>
-                            Ready to share your knowledge with the developer community?
+                            Bạn đã sẵn sàng để chia sẻ kiến thức của mình với cộng đồng lập trình viên chưa?
                         </Paragraph>
                     </Col>
                     <Col>
@@ -96,7 +92,7 @@ const DashboardHome: React.FC = () => {
                             icon={<PlusOutlined />}
                             onClick={handleCreatePost}
                         >
-                            Create New Post
+                            Tạo bài viết mới
                         </Button>
                     </Col>
                 </Row>
@@ -107,13 +103,8 @@ const DashboardHome: React.FC = () => {
                 title={
                     <Space>
                         <FileTextOutlined />
-                        <span>Recent Posts</span>
+                        <span>Bài viết được đăng tải gần đây</span>
                     </Space>
-                }
-                extra={
-                    <Button type="link" onClick={() => router.push('/dashboard/myPosts')}>
-                        View All
-                    </Button>
                 }
             >
                 <List
@@ -152,7 +143,7 @@ const DashboardHome: React.FC = () => {
                                 description={
                                     <Space direction="vertical" size={4}>
                                         <Text type="secondary">
-                                            by {post.authorId?.username || 'Unknown'} • {new Date(post.createdAt).toLocaleDateString()}
+                                            by {post.authorId?.username || 'Không xác định'} • {new Date(post.createdAt).toLocaleDateString()}
                                         </Text>
                                         <Space wrap>
                                             {post.tags?.map((tag, index) => (

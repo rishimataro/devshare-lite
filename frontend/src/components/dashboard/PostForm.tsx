@@ -12,19 +12,10 @@ import {
     App,
     Row,
     Col,
-    Divider,
-    Switch,
-    Alert
 } from 'antd';
 import {
     PlusOutlined,
-    SaveOutlined,
     EyeOutlined,
-    EditOutlined,
-    SendOutlined,
-    PictureOutlined,
-    FileTextOutlined,
-    TagsOutlined
 } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { createPost } from '@/utils/postApi';
@@ -103,9 +94,7 @@ const PostForm: React.FC = () => {
                 status: (values.isPublished ? 'published' : 'draft') as 'published' | 'draft'
             };
             
-            console.log('Sending post data:', postData);
             const result = await createPost(postData);
-            console.log('Post creation result:', result);
             
             message.success('Post created successfully!');
             router.push('/dashboard/home');
@@ -119,7 +108,7 @@ const PostForm: React.FC = () => {
                 message.error('Bạn cần đăng nhập để tạo bài viết.');
                 router.push('/auth/login');
             } else {
-                const errorMessage = error.response?.data?.message || error.message || 'Failed to create post. Please try again.';
+                const errorMessage = error.response?.data?.message || error.message || 'Không thể tạo bài viết. Vui lòng thử lại';
                 message.error(errorMessage);
             }
         } finally {
@@ -128,8 +117,7 @@ const PostForm: React.FC = () => {
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-        message.error('Please fill in all required fields correctly.');
+        message.error('Vui lòng điền đầy đủ thông tin bắt buộc.');
     };
 
     const handleSaveDraft = async () => {
@@ -137,7 +125,7 @@ const PostForm: React.FC = () => {
             const values = await form.getFieldsValue();
             
             if (!values.title || !values.content) {
-                message.error('Please fill in at least title and content to save as draft.');
+                message.error('Vui lòng điền ít nhất tiêu đề và nội dung để lưu bản nháp.');
                 return;
             }
             
@@ -151,12 +139,11 @@ const PostForm: React.FC = () => {
             };
             
             await createPost(postData);
-            message.success('Draft saved successfully!');
+            message.success('Đã lưu bản nháp thành công!');
             router.push('/dashboard/myPosts');
         } catch (error: any) {
             console.error('Error saving draft:', error);
             
-            // Handle specific error cases
             if (error.response?.status === 401) {
                 message.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
                 router.push('/auth/login');
@@ -164,8 +151,7 @@ const PostForm: React.FC = () => {
                 message.error('Bạn cần đăng nhập để lưu bài viết.');
                 router.push('/auth/login');
             } else {
-                // Display specific error message if available
-                const errorMessage = error.response?.data?.message || error.message || 'Failed to save draft.';
+                const errorMessage = error.response?.data?.message || error.message || 'Lỗi lưu bản nháp. Vui lòng thử lại.';
                 message.error(errorMessage);
             }
         } finally {
@@ -180,7 +166,7 @@ const PostForm: React.FC = () => {
                     <Space>
                         <PlusOutlined />
                         <Title level={3} style={{ margin: 0 }}>
-                            Create New Post
+                            Tạo bài viết mới
                         </Title>
                     </Space>
                 }
@@ -205,7 +191,6 @@ const PostForm: React.FC = () => {
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
                         onValuesChange={(changedValues, allValues) => {
-                            console.log('PostForm: Form values changed:', allValues);
                             setFormValues(allValues);
                         }}
                         layout="vertical"
@@ -230,13 +215,13 @@ const PostForm: React.FC = () => {
                                         </span>
                                     }
                                     rules={[
-                                        { required: true, message: 'Please input the post title!' },
-                                        { min: 5, message: 'Title must be at least 5 characters long!' },
-                                        { max: 100, message: 'Title must not exceed 100 characters!' },
+                                        { required: true, message: 'Vui lòng điền tiêu đề' },
+                                        { min: 5, message: 'Tiêu đề phải có ít nhất 5 ký tự' },
+                                        { max: 100, message: 'Tiêu đề không được vượt quá 100 ký tự' },
                                     ]}
                                 >
                                     <Input
-                                        placeholder="Enter an engaging title for your post"
+                                        placeholder="Nhập tiêu đề hấp dẫn cho bài viết của bạn"
                                         size="large"
                                         onChange={(e) => setTitleLength(e.target.value.length)}
                                         showCount
@@ -259,12 +244,12 @@ const PostForm: React.FC = () => {
                                         </span>
                                     }
                                     rules={[
-                                        { required: true, message: 'Please input the post content!' },
-                                        { min: 100, message: 'Content must be at least 100 characters long!' },
+                                        { required: true, message: 'Vui lòng điền nội dung bài viết!' },
+                                        { min: 100, message: 'Nội dung phải có ít nhất 100 ký tự!' },
                                     ]}
                                 >
                                     <TextArea
-                                        placeholder="Write your post content here... (Markdown supported)"
+                                        placeholder="Nhập nội dung bài viết của bạn ở đây... (Hỗ trợ Markdown)"
                                         rows={15}
                                         style={{ fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace' }}
                                         onChange={(e) => setContentLength(e.target.value.length)}
@@ -274,8 +259,8 @@ const PostForm: React.FC = () => {
 
                                 <Form.Item
                                     name="images"
-                                    label="Post Images (Optional)"
-                                    help="Upload images for your post. Maximum 5 images."
+                                    label="Hình ảnh bài viết (Tùy chọn)"
+                                    help="Hãy tải lên hình ảnh liên quan đến bài viết của bạn. Tối đa 5 hình ảnh."
                                 >
                                     <ImageUpload maxImages={5} />
                                 </Form.Item>
@@ -284,10 +269,10 @@ const PostForm: React.FC = () => {
                             <Col xs={24} lg={8}>
                                 <Form.Item
                                     name="category"
-                                    label="Category (Optional)"
+                                    label="Category (Tùy chọn)"
                                 >
                                     <Select
-                                        placeholder="Select a category"
+                                        placeholder="Chọn category"
                                         size="large"
                                         allowClear
                                     >
@@ -301,11 +286,11 @@ const PostForm: React.FC = () => {
 
                                 <Form.Item
                                     name="tags"
-                                    label="Tags (Optional)"
+                                    label="Tags (Tùy chọn)"
                                 >
                                     <Select
                                         mode="multiple"
-                                        placeholder="Select relevant tags"
+                                        placeholder="Chọn một hoặc nhiều tags"
                                         size="large"
                                         maxTagCount={5}
                                         allowClear
@@ -320,7 +305,7 @@ const PostForm: React.FC = () => {
 
                                 <Form.Item
                                     name="isPublished"
-                                    label="Publish Status"
+                                    label="Tình trang đăng tải"
                                     valuePropName="checked"
                                 >
                                     <Button 
@@ -331,7 +316,7 @@ const PostForm: React.FC = () => {
                                         block
                                         onClick={() => form.setFieldsValue({ isPublished: true })}
                                     >
-                                        {loading ? 'Publishing...' : 'Publish Post'}
+                                        {loading ? 'Đang xuất...' : 'Xuất bản'}
                                     </Button>
                                 </Form.Item>
 
@@ -346,7 +331,7 @@ const PostForm: React.FC = () => {
                                             handleSaveDraft();
                                         }}
                                     >
-                                        {loading ? 'Saving...' : 'Save as Draft'}
+                                        {loading ? 'Đang lưu...' : 'Lưu bản nháp'}
                                     </Button>
                                 </Form.Item>
                             </Col>

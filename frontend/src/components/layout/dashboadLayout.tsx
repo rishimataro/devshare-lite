@@ -16,10 +16,7 @@ import {
     HomeOutlined,
     FileTextOutlined,
     PlusOutlined,
-    HeartOutlined,
-    BookOutlined,
     UserOutlined,
-    SettingOutlined,
     LogoutOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -44,29 +41,28 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
-    // Menu items for the sidebar
     const menuItems = [
         {
             key: '/dashboard/home',
             icon: <HomeOutlined />,
-            label: 'Home',
+            label: 'Trang chủ',
         },
         {
             key: '/dashboard/createPosts',
             icon: <PlusOutlined />,
-            label: 'Create Post',
+            label: 'Tạo bài viết',
         },
         {
             key: '/dashboard/myPosts',
             icon: <FileTextOutlined />,
-            label: 'My Posts',
+            label: 'Bài viết của tôi',
         },
     ];
 
     const userMenuItems: MenuProps['items'] = [
         {
             key: 'profile',
-            label: 'Profile',
+            label: 'Trang cá nhân',
             icon: <UserOutlined />,
             onClick: () => {
                 if (session?.user?._id) {
@@ -79,7 +75,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         },
         {
             key: 'logout',
-            label: 'Logout',
+            label: 'Đăng xuất',
             icon: <LogoutOutlined />,
             onClick: () => signOut({ callbackUrl: '/auth/login' }),
         },

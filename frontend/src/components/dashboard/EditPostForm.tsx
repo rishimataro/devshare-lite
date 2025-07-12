@@ -98,7 +98,6 @@ const EditPostForm: React.FC = () => {
                 const postData = data as Post;
                 setPost(postData);
                 
-                // Set form values
                 form.setFieldsValue({
                     title: postData.title,
                     content: postData.content,
@@ -107,7 +106,7 @@ const EditPostForm: React.FC = () => {
                     status: postData.status,
                 });
             } catch (error) {
-                console.error('Error fetching post:', error);
+                console.error('Không thể tải bài viết:', error);
                 message.error('Không thể tải bài viết để chỉnh sửa');
                 router.push('/dashboard/myPosts');
             } finally {
@@ -133,8 +132,8 @@ const EditPostForm: React.FC = () => {
             message.success('Bài viết đã được cập nhật thành công!');
             router.push('/dashboard/myPosts');
         } catch (error: any) {
-            console.error('Error updating post:', error);
-            
+            console.error('Không thể cập nhật bài viết:', error);
+
             if (error.response?.status === 401) {
                 message.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
                 router.push('/auth/login');
@@ -151,7 +150,7 @@ const EditPostForm: React.FC = () => {
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
+        console.log('Lỗi:', errorInfo);
         message.error('Vui lòng điền đầy đủ thông tin bắt buộc.');
     };
 
@@ -367,8 +366,7 @@ const EditPostForm: React.FC = () => {
 
                                 <Form.Item
                                     name="images"
-                                    label="Hình ảnh bài viết"
-                                    help="Upload hình ảnh cho bài viết. Tối đa 5 ảnh."
+                                    label="Hình ảnh"
                                 >
                                     <ImageUpload maxImages={5} />
                                 </Form.Item>
@@ -391,17 +389,6 @@ const EditPostForm: React.FC = () => {
                                                 {tag}
                                             </Option>
                                         ))}
-                                    </Select>
-                                </Form.Item>
-
-                                <Form.Item
-                                    name="status"
-                                    label="Trạng thái"
-                                >
-                                    <Select size="large">
-                                        <Option value="draft">Bản nháp</Option>
-                                        <Option value="published">Đã xuất bản</Option>
-                                        <Option value="archived">Lưu trữ</Option>
                                     </Select>
                                 </Form.Item>
 
