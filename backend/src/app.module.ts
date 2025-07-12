@@ -6,11 +6,9 @@ import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './modules/users/users.module';
 import { PostsModule } from './modules/posts/posts.module';
-import { TagsModule } from './modules/tags/tags.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { User, UserSchema } from './modules/users/schemas/user.schema';
 import { Post, PostSchema } from './modules/posts/schemas/post.schema';
-import { Tag, TagSchema } from './modules/tags/schemas/tag.schema';
 import { Comment, CommentSchema } from './modules/comments/schemas/comment.schema';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/passport/jwt-auth.guard';
@@ -23,7 +21,6 @@ import * as path from 'path';
     imports: [
         UsersModule,
         PostsModule,
-        TagsModule,
         CommentsModule,
         AuthModule,
         ConfigModule.forRoot({
@@ -38,7 +35,6 @@ import * as path from 'path';
         }),
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
         MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
-        MongooseModule.forFeature([{ name: Tag.name, schema: TagSchema }]),
         MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
         MailerModule.forRootAsync({
             imports: [ConfigModule],
