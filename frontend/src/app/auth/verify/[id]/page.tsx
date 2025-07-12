@@ -66,7 +66,7 @@ const VerifyContent: React.FC<VerifyPageProps> = ({ params }) => {
             const { verificationCode } = values;
 
             const result = await sendRequest<any>({
-                url: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/verify-account`,
+                url: `${process.env.NEXT_PUBLIC_API_URL}/auth/verify-account`,
                 method: 'POST',
                 body: {
                     userId,
